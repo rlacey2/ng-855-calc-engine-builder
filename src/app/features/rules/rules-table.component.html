@@ -1,0 +1,16 @@
+  <div>
+    <button class="btn btn-sm btn-success mb-2" (click)="add.emit()">Add</button>
+
+    <table class="table table-sm table-hover">
+      <tbody>
+        @for (r of rules; track r.id) {
+          <tr (click)="select.emit(r)"
+              [class.table-warning]="r.id === selectedId">
+             <td>{{r.id}}</td> 
+            <td>{{r.target}}</td>
+             <td>{{r.expression}}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>

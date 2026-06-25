@@ -1,0 +1,93 @@
+@if (rule) {
+
+<div class="d-flex flex-wrap">
+
+  <mat-form-field>
+    <mat-label>Id</mat-label>
+    <input matInput class="form-control mb-2" [(ngModel)]="rule.id" />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Type</mat-label>
+    <input matInput class="form-control mb-2" [(ngModel)]="rule.type" />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Target</mat-label>
+    <input matInput class="form-control mb-2" [(ngModel)]="rule.target" />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Scope</mat-label>
+    <input matInput class="form-control mb-2" [(ngModel)]="rule.scope" />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Ignore</mat-label>
+    <input matInput class="form-control mb-2" [(ngModel)]="rule.ignore" />
+  </mat-form-field>
+
+
+  <mat-form-field>
+    <mat-label>Priority</mat-label>
+    <input matInput class="form-control mb-2" [(ngModel)]="rule.priority" />
+  </mat-form-field>
+
+  <!-- 
+  <mat-form-field>
+    <mat-label>When</mat-label>
+    <input matInput class="form-control mb-2" [(ngModel)]="rule.when" />
+  </mat-form-field>
+-->
+    <mat-form-field>
+    <mat-label>Rounding</mat-label>
+    <input matInput class="form-control mb-2" [(ngModel)]="rule.rounding" />
+  </mat-form-field>
+
+
+  <mat-form-field>
+    <mat-label>Tag</mat-label>
+    <input matInput class="form-control mb-2" [(ngModel)]="rule.tag" />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Description</mat-label>
+    <input matInput class="form-control mb-2" [(ngModel)]="rule.descripion" />
+  </mat-form-field>
+
+
+
+
+</div>
+
+<div class="d-flex w-100">
+  <div class="w-25">
+    Expression
+  </div>
+  <div class="flex-grow-1" [class.border]="true" [class.border-danger]="error">
+    <ngx-monaco-editor style="height:70px" [(ngModel)]="rule.expression" [options]="opts" (ngModelChange)="validate()">
+    </ngx-monaco-editor>
+  </div>
+</div>
+
+<div class="d-flex">
+  <div class="w-25">
+    When
+  </div>
+  <div class="flex-grow-1" [class.border]="true" [class.border-danger]="error">
+    <ngx-monaco-editor style="height:70px" [(ngModel)]="rule.when" [options]="opts" (ngModelChange)="validate()">
+    </ngx-monaco-editor>
+  </div>
+</div>
+
+
+
+
+
+
+
+@if (error) {
+<div class="text-danger small mt-1">{{error}}</div>
+}
+
+}

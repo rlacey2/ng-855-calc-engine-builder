@@ -1,0 +1,30 @@
+<div class="container-fluid d-flex flex-column vh-100">
+
+  <div class="d-flex justify-content-between p-2 border-bottom">
+    <h5>Calc Builder</h5>
+
+    <div class="d-flex gap-2">
+      <button class="btn btn-outline-secondary btn-sm" (click)="export()">Export</button>
+      <button class="btn btn-outline-secondary btn-sm" (click)="import()">Import</button>
+    </div>
+  </div>
+
+  <div class="flex-grow-1 d-flex overflow-hidden">
+
+    <div class="col-4 border-end p-2">
+      <rules-table [rules]="rules()" [selectedId]="selected()?.id" (select)="select($event)" (add)="add()">
+      </rules-table>
+    </div>
+
+    <div class="col-8 d-flex flex-column p-2">
+
+      <rule-editor [rule]="selected()"></rule-editor>
+
+      <test-runner [rules]="rules()" [t3FormFG]="t3FormFG" style="display: block; max-height: 400px; overflow-y: auto;">
+      </test-runner>
+
+    </div>
+
+  </div>
+
+</div>
