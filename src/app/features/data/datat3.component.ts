@@ -8,6 +8,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'; 
+import { EngineAdapterService } from '../../shared/engineAdapterService';
 
 @Component({
   selector: 'data-t3',
@@ -21,6 +22,9 @@ export class DataT3Component {
   @Input() t3FormFG: FormGroup | undefined;
 
   output = signal<any>(null);
+
+  engineAdapterService = inject(EngineAdapterService)
+
 
    t3FormFGService = inject(t3FormFGService)
 
@@ -79,6 +83,7 @@ export class DataT3Component {
     let newCurrent = this.t3dataform.get('current')?.getRawValue()
   // let newJSON = JSON.parse(newCurrent)
     this.t3dataform.patchValue({ current: newCurrent }, { emitEvent: false })
+    this.t3FormFG?.patchValue(newCurrent,  { emitEvent: false })
   }
 
 }

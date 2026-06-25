@@ -9,6 +9,8 @@ import { DependencyGraphComponent } from './features/graph/dependency-graph.comp
 import { ruleSet } from './core/engine/rules'
 import { t3FormFGService } from './shared/t3FormFGService';
 import { DataT3Component } from './features/data/datat3.component';
+import { Rule } from './core/engine/types';
+import { EngineAdapterService } from './shared/engineAdapterService';
 
 @Component({
   selector: 'app-root',
@@ -25,9 +27,13 @@ import { DataT3Component } from './features/data/datat3.component';
 
 export class AppComponent {
 
-  rules = signal<any[]>([]);
-  selected = signal<any>(null);
+  engineAdapterService = inject(EngineAdapterService)
 
+ // rules = signal<any[]>([]);
+ // selected = signal<any>(null);
+
+  rules = this.engineAdapterService.rules
+  selected = this.engineAdapterService.selected
 
   testRules: any
 
@@ -37,21 +43,28 @@ export class AppComponent {
 
   constructor() {
 
-    const rulesAsString = JSON.stringify(ruleSet.sequentialSteps2)
+    const rulesToUse = ruleSet.sequentialSteps2
+    let sortedRules = this.engineAdapterService.setRulesAgenda(rulesToUse)
 
-    // the rules are separate form the engine that will produce them
+    const rulesAsString = JSON.stringify(rulesToUse )
+
+    // the rules are separate form the engine that will consume them
     // i.e. the DSL is used to create the execution of rules that meet the syntax
 
-    this.rules.set(JSON.parse(rulesAsString));
+   // let sortedRules = this.sortRules(rulesToUse)
 
-    this.t3FormFG = this.t3FormFGService.getT3FormFG();
+   // this.rules.set(JSON.parse(rulesAsString));
+  //  this.rules.set(sortedRules);
+
+   // this.t3FormFG = this.t3FormFGService.getT3FormFG();
+this.t3FormFG = this.engineAdapterService.get_t3FormFG()
 
   }
 
 
   add() {
     this.rules.update(r => [...r, {
-      id: crypto.randomUUID(),
+      id: crypto.randomUUID().split("-")[0],
       target: '',
       expression: ''
     }]);
@@ -69,4 +82,60 @@ export class AppComponent {
     const json = prompt('paste json');
     if (json) this.rules.set(JSON.parse(json));
   }
+
+
+  sortRules(rules: Rule[]): Rule[] {
+
+  const zzzzsortedInput = [...rules].sort((a , b) => {
+
+    // 1. Sort by target alphabetically by scoped target
+
+    const kA = `${a.scope}:${a.target}`;
+    const kB = `${b.scope}:${b.target}`;
+     
+    const targetComparison = kA.localeCompare(kB);
+    
+    // 2. If targets are different, return the comparison result
+    if (targetComparison !== 0) {
+      return targetComparison;
+    }
+ 
+    const pA = a.priority ?? 999;
+    const pB = b.priority ?? 999;
+   // if (pA !== pB) return pA - pB;
+  return pA - pB;
+
+  });
+
+  const sortedInput = [...rules].sort((a, b) => {
+    const pA = 1000 + (a.priority ?? 999);
+    const pB = 1000 + (b.priority ?? 999);
+  // if (pA !== pB) return pA - pB;
+
+    const kA = `${a.scope}:${a.target}:${pA}`;
+    const kB = `${b.scope}:${b.target}:${pB}`;
+    return kA.localeCompare(kB);
+  });
+
+  return sortedInput
+
+
+/*
+  return [...rules].sort((a, b) => {
+    // 1. Sort by target alphabetically
+    const targetComparison = a.target.localeCompare(b.target);
+    
+    // 2. If targets are different, return the comparison result
+    if (targetComparison !== 0) {
+      return targetComparison;
+    }
+    
+    // 3. If targets are identical, sort by priority ascending
+    return a.priority - b.priority;
+  });
+*/
+
+}
+
+
 }

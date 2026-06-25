@@ -1,5 +1,5 @@
 // features/rules/rule-editor.component.ts
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
  
 //import { ValidationService } from '../../shared/validation.service';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
@@ -9,6 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'; // 👈 Add this line
+import { EngineAdapterService } from '../../shared/engineAdapterService';
 
 
 @Component({
@@ -20,6 +21,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms'; // 👈 Add t
 export class RuleEditorComponent {
 
   @Input() rule: any;
+
+
+  engineAdapterService = inject(EngineAdapterService)
 
   error: string | null = null;
 
@@ -34,5 +38,15 @@ export class RuleEditorComponent {
 
   validate() {
  //   this.error = this.v.validate(this.rule.expression);
+  }
+
+  fix() {
+    // need to save back and resort the rules for the table
+    alert('fix me')
+  }
+
+
+  save() {
+    this.engineAdapterService.updateRulesTable()
   }
 }

@@ -300,12 +300,12 @@ private buildExecutionOrder(rules: any[]) {
 
   // Seed DFS
   const sortedInput = [...rules].sort((a, b) => {
-    const pA = a.priority ?? 999;
-    const pB = b.priority ?? 999;
-    if (pA !== pB) return pA - pB;
+    const pA = 1000 + (a.priority ?? 999);
+    const pB = 1000 + (b.priority ?? 999);
+  // if (pA !== pB) return pA - pB;
 
-    const kA = `${a.scope}:${a.target}:${a.id}`;
-    const kB = `${b.scope}:${b.target}:${b.id}`;
+    const kA = `${a.scope}:${a.target}:${pA}`;
+    const kB = `${b.scope}:${b.target}:${pB}`;
     return kA.localeCompare(kB);
   });
 
@@ -646,6 +646,7 @@ private ZZbuildExecutionOrder(rules: any[]) {
         scope: 'header',
         ruleId: rule.id,
         target: rule.target,
+         priority: rule.priority,
         deps: rule.dependsOn,
         input: inputSnapshot,
         output,
@@ -721,6 +722,7 @@ private ZZbuildExecutionOrder(rules: any[]) {
           scope: 'row',
           ruleId: rule.id,
           target: rule.target,
+           priority: rule.priority,
           deps: rule.dependsOn,
           input: inputSnapshot,
           output,
@@ -804,6 +806,7 @@ private ZZbuildExecutionOrder(rules: any[]) {
           scope: 'row',
           ruleId: rule.id,
           target: rule.target,
+           priority: rule.priority,
           deps: rule.dependsOn,
           input: inputSnapshot,
           output,
