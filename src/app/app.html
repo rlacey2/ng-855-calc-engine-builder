@@ -19,8 +19,15 @@
     <div class="col-8 d-flex flex-column p-2">
 
       <rule-editor [rule]="selected()"></rule-editor>
-
-      <test-runner [rules]="rules()" [t3FormFG]="t3FormFG" style="display: block; max-height: 400px; overflow-y: auto;">
+<!-- 
+      <div class="border-top p-2">
+        <div>
+          Dependency Graph
+        </div>
+        <dependency-graph [rules]="rules()" [rulesByScope]=""></dependency-graph>
+      </div>
+-->
+      <test-runner [rules]="rules()" [t3FormFG]="t3FormFG" style="display: block; max-height: 1400px; overflow-y: auto;">
       </test-runner>
 
     </div>

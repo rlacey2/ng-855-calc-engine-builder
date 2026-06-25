@@ -7,12 +7,13 @@ import { CalcEngine } from '../../core/engine/calc-engine';
 import { JsonPipe } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { TraceViewerComponent } from "../trace/trace-viewer.component";
+import { DependencyGraphComponent } from "../graph/dependency-graph.component";
 
 @Component({
   selector: 'test-runner',
   standalone: true,
   templateUrl: './test-runner.component.html',
-  imports: [JsonPipe, TraceViewerComponent],
+  imports: [JsonPipe, TraceViewerComponent, DependencyGraphComponent],
   
 })
 export class TestRunnerComponent {
@@ -56,6 +57,6 @@ export class TestRunnerComponent {
     this.output.set(trace);
 
 console.log(this.output().length)
-    // console.log(this.engine.getTrace());
+ 
   }
 }

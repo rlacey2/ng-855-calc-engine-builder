@@ -696,7 +696,7 @@ private ZZbuildExecutionOrder(rules: any[]) {
     const header = { ...rawFormValues.header };
     const rows = rawFormValues.details.map((row: any) => ({ ...row }));
 
-    for (const row of rows) {
+    for (const row of rows) { // these are the input data rows
       for (const rule of this.rulesByScope.row) {
 
         const ctx: any = this.createProxyContext(row, header); // must stay inside loop, to get mutated context
@@ -730,7 +730,7 @@ private ZZbuildExecutionOrder(rules: any[]) {
 
     // Final-only rounding
     if (this.roundingMode === 'final-only') {
-      for (const row of rows) {
+      for (const row of rows) { // these are the input data rows
         for (const rule of this.rulesByScope.row) {
           row[rule.target] = this.applyRounding(row[rule.target], rule.rounding ?? this.config.rounding);
         }

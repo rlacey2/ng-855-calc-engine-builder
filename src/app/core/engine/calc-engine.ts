@@ -187,6 +187,11 @@ export class CalcEngine {
     };
   }
 
+
+ get_rulesByScope() {
+  return this.rulesByScope
+ }
+
   // =========================================================================
   // Dependency Graph + Circular Detection
   // =========================================================================
@@ -637,6 +642,7 @@ private ZZbuildExecutionOrder(rules: any[]) {
       }
 
       this.traceLog.push({
+        dataN: '',
         scope: 'header',
         ruleId: rule.id,
         target: rule.target,
@@ -690,8 +696,10 @@ private ZZbuildExecutionOrder(rules: any[]) {
     const header = { ...rawFormValues.header };
     const rows = rawFormValues.details.map((row: any) => ({ ...row }));
 
-    for (const row of rows) {
-      for (const rule of this.rulesByScope.row) {
+    let dataN = 0
+    for (const row of rows) { // these are the input data rows
+      dataN++
+      for (const rule of this.rulesByScope.row) { // data input rows
 
         const ctx: any = this.createProxyContext(row, header); // must stay inside loop, to get mutated context
 
@@ -709,6 +717,7 @@ private ZZbuildExecutionOrder(rules: any[]) {
         }
 
         this.traceLog.push({
+          dataN: dataN,
           scope: 'row',
           ruleId: rule.id,
           target: rule.target,
@@ -724,8 +733,8 @@ private ZZbuildExecutionOrder(rules: any[]) {
 
     // Final-only rounding
     if (this.roundingMode === 'final-only') {
-      for (const row of rows) {
-        for (const rule of this.rulesByScope.row) {
+      for (const row of rows) { // these are the input data rows
+        for (const rule of this.rulesByScope.row) { // data input rows
           row[rule.target] = this.applyRounding(row[rule.target], rule.rounding ?? this.config.rounding);
         }
       }
@@ -769,7 +778,11 @@ private ZZbuildExecutionOrder(rules: any[]) {
       if (!row) throw new Error("A 'row' data object must be provided for row-scoped evaluation.");
 
       // Execute all row-scoped rules sequentially for this single row item
-      for (const rule of this.rulesByScope.row) {
+  let dataN = 0
+   
+      dataN++
+
+      for (const rule of this.rulesByScope.row) { // data input rows
 
         const ctx: any = this.createProxyContext(row, header);  // must stay inside loop, to get mutated context
 
@@ -787,6 +800,7 @@ private ZZbuildExecutionOrder(rules: any[]) {
         }
 
         this.traceLog.push({
+          dataN: dataN,
           scope: 'row',
           ruleId: rule.id,
           target: rule.target,
@@ -799,7 +813,7 @@ private ZZbuildExecutionOrder(rules: any[]) {
 
       // Apply fallback rounding configuration if per-step isn't already taking care of it
       if (this.roundingMode === 'final-only') {
-        for (const rule of this.rulesByScope.row) {
+        for (const rule of this.rulesByScope.row) { // data input rows
           row[rule.target] = this.applyRounding(row[rule.target], rule.rounding ?? this.config.rounding);
         }
       }

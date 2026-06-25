@@ -9,6 +9,7 @@
     <tr>
       <th>Scope</th>
       <th>Rule ID</th>
+       <th>DataN</th>
       <th>Target</th>
       <th>Dependencies</th>
       <th>Input Data</th>
@@ -21,6 +22,7 @@
        <tr [class.row-skipped]="item.skipped">
         <td>{{ item.scope }}</td>
         <td>{{ item.ruleId }}</td>
+           <td>{{ item.dataN }}</td>
         <td>{{ item.target }}</td>
         <td>
           @if (item.deps.length) {

@@ -122,4 +122,5 @@ ignore?: boolean;
 
   createdAt?: string;
  updatedAt?: string;
+  dependsOn?: object;
 };

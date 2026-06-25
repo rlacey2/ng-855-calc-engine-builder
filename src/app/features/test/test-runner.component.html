@@ -1,9 +1,20 @@
- 
+     <button class="btn btn-success btn-sm" (click)="run()">Run</button>
+    
+    @if(engine)  {
+      
+      <div class="border-top p-2">
+        <div>
+          Dependency Graph
+        </div>
+        <dependency-graph [rules]="[]" [rulesByScope]="engine.get_rulesByScope()"></dependency-graph>
+      </div>
+  
   <div class="border-top p-2">
 
-    <button class="btn btn-success btn-sm" (click)="run()">Run</button>
+   
 
-<trace-viewer [trace]="output()"></trace-viewer>
+  <trace-viewer [trace]="output()"></trace-viewer>
 
   </div>
+}
   
