@@ -13,7 +13,9 @@ import { DependencyGraphComponent } from "../graph/dependency-graph.component";
   selector: 'test-runner',
   standalone: true,
   templateUrl: './test-runner.component.html',
-  imports: [JsonPipe, TraceViewerComponent, DependencyGraphComponent],
+  imports: [
+  //  JsonPipe,
+     TraceViewerComponent, DependencyGraphComponent],
   
 })
 export class TestRunnerComponent {

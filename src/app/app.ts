@@ -8,6 +8,7 @@ import { DependencyGraphComponent } from './features/graph/dependency-graph.comp
 
 import { ruleSet } from './core/engine/rules'
 import { t3FormFGService } from './shared/t3FormFGService';
+import { DataT3Component } from './features/data/datat3.component';
 
 @Component({
   selector: 'app-root',
@@ -16,7 +17,8 @@ import { t3FormFGService } from './shared/t3FormFGService';
     RulesTableComponent,
     RuleEditorComponent,
     TestRunnerComponent,
-    DependencyGraphComponent
+  //  DependencyGraphComponent
+  DataT3Component
 ],
   templateUrl: './app.html'
 })
