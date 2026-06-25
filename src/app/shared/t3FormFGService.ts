@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 
 @Injectable({ providedIn: 'root' })
 export class t3FormFGService {
@@ -59,10 +59,24 @@ export class t3FormFGService {
 
   });
 
+  
+
+    // 1. Initialize the form group to satisfy the TypeScript compiler
+  t3dataform = new FormGroup({
+    current: new FormControl('')
+  });
+
+
+   
 
   getT3FormFG() {
-    return this.form;
+    return this.form; // lots of controls i.e. replicating pattern of live inputs to public
   }
+
+  get_t3dataform() { // single control, to allow cheap testing 
+     return this.t3dataform
+  }
+
 
 
 }

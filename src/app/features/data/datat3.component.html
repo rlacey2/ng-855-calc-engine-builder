@@ -1,35 +1,32 @@
-   
-    
-    @if(t3FormFG)  {
-     
- <div class="d-flex flex-column">
+@if(t3dataform) {
+
+<div class="d-flex flex-column">
 
   <div class="d-flex flex-row">
     <div>
       Data Inputs to Rules
     </div>
     <div>
-   
+   <button class="btn btn-sm btn-success mb-2 ms-5" (click)="patch()">Patch</button>
     </div>
   </div>
 
-<div>
-
-  <mat-form-field>
-    <mat-label>Data Values</mat-label>
-    <textarea matInput rows="20"class="form-control mb-2" [(ngModel)]="t3data.current" ></textarea>
-  </mat-form-field>
+  <div>
 
 
+    <!-- Wrap it in the form group or add it to an existing container -->
+    <div [formGroup]="t3dataform">
+      <mat-form-field>
+        <mat-label>Data Values</mat-label>
+        <!-- Use formControlName instead of ngModel -->
+        <textarea matInput rows="20" cols=" 40"class="form-control mb-2" formControlName="current"></textarea>
+      </mat-form-field>
+    </div>
 
+    
+  
 
+  </div>
 
-  <pre>
-  {{ t3FormFG.getRawValue() | json}}
-  </pre>
-
-</div>
- 
 </div>
 }
-  
