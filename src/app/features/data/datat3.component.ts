@@ -2,7 +2,7 @@
 import { ChangeDetectorRef, Component, forwardRef, inject, Input, signal } from '@angular/core';
 
 import { JsonPipe } from '@angular/common';
-import { FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { FormArray, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { t3FormFGService } from '../../shared/t3FormFGService';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -28,7 +28,6 @@ export class DataT3Component {
   output = signal<any>(null);
 
   engineAdapterService = inject(EngineAdapterService)
-
 
   t3FormFGService = inject(t3FormFGService)
 
@@ -112,11 +111,23 @@ export class DataT3Component {
     console.log('patch')
     let newCurrent = this.t3dataform.get('current')?.getRawValue()
     let newJSON = JSON.parse(newCurrent)
-    // this.t3dataform.patchValue({ current: newJSON }, { emitEvent: false })
-     this.t3FormFG?.reset(newJSON, { emitEvent: true })
+
+    this.t3FormFG =  this.engineAdapterService.generateForm(newJSON)
 
     let nv = this.t3FormFG?.getRawValue()
     console.log(nv)
+
+    // this.t3dataform.patchValue({ current: newJSON }, { emitEvent: false })
+   //  this.t3FormFG?.reset(newJSON, { emitEvent: true })
+
+   // (this.t3FormFG?.get('details') as FormArray).clear() 
+/*
+   this.t3FormFG?.get('headers')?.setValue(newJSON.header)
+
+   this.t3FormFG?.get('details')?.setValue(newJSON.details)
+*/
+
+
   }
 
 

@@ -156,9 +156,7 @@ export class MonacoWrapperComponent implements ControlValueAccessor {
       }
     });
 
-
   }
-
 
   jsonDiff(x: object): DiffEditorModel {
  

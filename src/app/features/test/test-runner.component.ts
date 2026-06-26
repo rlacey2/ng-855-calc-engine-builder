@@ -1,5 +1,5 @@
 // features/test/test-runner.component.ts
-import { Component, Input, signal } from '@angular/core';
+import { Component, inject, Input, signal } from '@angular/core';
  
 import { Rule } from '../../core/engine/types';
 import { CalcEngineConfig } from '../../core/engine/types';
@@ -8,6 +8,7 @@ import { JsonPipe } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { TraceViewerComponent } from "../trace/trace-viewer.component";
 import { DependencyGraphComponent } from "../graph/dependency-graph.component";
+import { EngineAdapterService } from '../../shared/engineAdapterService';
 
 @Component({
   selector: 'test-runner',
@@ -23,7 +24,12 @@ export class TestRunnerComponent {
   @Input() rules: Rule[] = [];
   @Input() t3FormFG: FormGroup | undefined;
 
+  engineAdapterService = inject(EngineAdapterService)
+
   output = signal<any>(null);
+
+
+
 
   testData = {
     // 🔴 should come from your t3FormData defaults
@@ -52,6 +58,9 @@ export class TestRunnerComponent {
     console.log('expects form data')
     // rebuild engine based on current rules
     this.engine = new CalcEngine(this.rules, this.engineConfig) // prepare the engine's internals
+
+    this.t3FormFG = this.engineAdapterService.get_t3FormFG()
+
     const res = this.engine.recalcAll(this.t3FormFG);
 
     let trace = this.engine.getTrace()
