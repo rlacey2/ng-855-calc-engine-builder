@@ -107,13 +107,16 @@ export class DataT3Component {
     });
 
   }
-
+ 
   patch() {
     console.log('patch')
     let newCurrent = this.t3dataform.get('current')?.getRawValue()
     let newJSON = JSON.parse(newCurrent)
     // this.t3dataform.patchValue({ current: newJSON }, { emitEvent: false })
-    this.t3FormFG?.patchValue(newJSON, { emitEvent: false })
+     this.t3FormFG?.reset(newJSON, { emitEvent: true })
+
+    let nv = this.t3FormFG?.getRawValue()
+    console.log(nv)
   }
 
 
