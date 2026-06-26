@@ -7,24 +7,39 @@
       Data Inputs to Rules
     </div>
     <div>
-   <button class="btn btn-sm btn-success mb-2 ms-5" (click)="patch()">Patch</button>
+      <button class="btn btn-sm btn-success mb-2 ms-5" (click)="patch()">Patch</button>
     </div>
   </div>
 
   <div>
 
 
+    @if(t3dataform) {
+
+    <form [formGroup]="t3dataform">
+
+      <monaco-editor-wrapper formControlName="current" [options]="editorOptionsStatic" [language]="'json'"></monaco-editor-wrapper>
+
+    </form>
+
+    }
+
+  
+    @if(0) {
+
     <!-- Wrap it in the form group or add it to an existing container -->
     <div [formGroup]="t3dataform" class=" ">
       <mat-form-field class="w-100">
         <mat-label>Data Values</mat-label>
         <!-- Use formControlName instead of ngModel -->
-        <textarea matInput rows="20"  class="form-control mb-2" formControlName="current"></textarea>
+        <textarea matInput rows="20" class="form-control mb-2" formControlName="current"></textarea>
       </mat-form-field>
     </div>
+    }
 
-    
-  
+
+
+
 
   </div>
 

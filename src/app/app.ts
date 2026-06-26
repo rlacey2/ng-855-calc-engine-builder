@@ -19,9 +19,9 @@ import { EngineAdapterService } from './shared/engineAdapterService';
     RulesTableComponent,
     RuleEditorComponent,
     TestRunnerComponent,
-  //  DependencyGraphComponent
-  DataT3Component
-],
+    //  DependencyGraphComponent
+    DataT3Component
+  ],
   templateUrl: './app.html'
 })
 
@@ -29,8 +29,8 @@ export class AppComponent {
 
   engineAdapterService = inject(EngineAdapterService)
 
- // rules = signal<any[]>([]);
- // selected = signal<any>(null);
+  // rules = signal<any[]>([]);
+  // selected = signal<any>(null);
 
   rules = this.engineAdapterService.rules
   selected = this.engineAdapterService.selected
@@ -46,18 +46,18 @@ export class AppComponent {
     const rulesToUse = ruleSet.sequentialSteps2
     let sortedRules = this.engineAdapterService.setRulesAgenda(rulesToUse)
 
-    const rulesAsString = JSON.stringify(rulesToUse )
+    const rulesAsString = JSON.stringify(rulesToUse)
 
     // the rules are separate form the engine that will consume them
     // i.e. the DSL is used to create the execution of rules that meet the syntax
 
-   // let sortedRules = this.sortRules(rulesToUse)
+    // let sortedRules = this.sortRules(rulesToUse)
 
-   // this.rules.set(JSON.parse(rulesAsString));
-  //  this.rules.set(sortedRules);
+    // this.rules.set(JSON.parse(rulesAsString));
+    //  this.rules.set(sortedRules);
 
-   // this.t3FormFG = this.t3FormFGService.getT3FormFG();
-this.t3FormFG = this.engineAdapterService.get_t3FormFG()
+    // this.t3FormFG = this.t3FormFGService.getT3FormFG();
+    this.t3FormFG = this.engineAdapterService.get_t3FormFG()
 
   }
 
@@ -86,56 +86,38 @@ this.t3FormFG = this.engineAdapterService.get_t3FormFG()
 
   sortRules(rules: Rule[]): Rule[] {
 
-  const zzzzsortedInput = [...rules].sort((a , b) => {
+    // helper function
+    const sortedInput = [...rules].sort((a, b) => {
+      const pA = 1000 + (a.priority ?? 999);
+      const pB = 1000 + (b.priority ?? 999);
+      // if (pA !== pB) return pA - pB;
 
-    // 1. Sort by target alphabetically by scoped target
+      const kA = `${a.scope}:${a.target}:${pA}`;
+      const kB = `${b.scope}:${b.target}:${pB}`;
+      return kA.localeCompare(kB);
+    });
 
-    const kA = `${a.scope}:${a.target}`;
-    const kB = `${b.scope}:${b.target}`;
-     
-    const targetComparison = kA.localeCompare(kB);
-    
-    // 2. If targets are different, return the comparison result
-    if (targetComparison !== 0) {
-      return targetComparison;
-    }
+    return sortedInput
+
+
+    /*
+      return [...rules].sort((a, b) => {
+        // 1. Sort by target alphabetically
+        const targetComparison = a.target.localeCompare(b.target);
+        
+        // 2. If targets are different, return the comparison result
+        if (targetComparison !== 0) {
+          return targetComparison;
+        }
+        
+        // 3. If targets are identical, sort by priority ascending
+        return a.priority - b.priority;
+      });
+    */
+
+  }
+
+
+}
+
  
-    const pA = a.priority ?? 999;
-    const pB = b.priority ?? 999;
-   // if (pA !== pB) return pA - pB;
-  return pA - pB;
-
-  });
-
-  const sortedInput = [...rules].sort((a, b) => {
-    const pA = 1000 + (a.priority ?? 999);
-    const pB = 1000 + (b.priority ?? 999);
-  // if (pA !== pB) return pA - pB;
-
-    const kA = `${a.scope}:${a.target}:${pA}`;
-    const kB = `${b.scope}:${b.target}:${pB}`;
-    return kA.localeCompare(kB);
-  });
-
-  return sortedInput
-
-
-/*
-  return [...rules].sort((a, b) => {
-    // 1. Sort by target alphabetically
-    const targetComparison = a.target.localeCompare(b.target);
-    
-    // 2. If targets are different, return the comparison result
-    if (targetComparison !== 0) {
-      return targetComparison;
-    }
-    
-    // 3. If targets are identical, sort by priority ascending
-    return a.priority - b.priority;
-  });
-*/
-
-}
-
-
-}

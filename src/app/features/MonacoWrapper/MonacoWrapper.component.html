@@ -1,0 +1,13 @@
+<ngx-monaco-editor [options]="editorOptions" 
+  [(ngModel)]="value"
+  (ngModelChange)="onValueChange( value)"
+  (onInit)="onEditorInit($event)" >
+</ngx-monaco-editor>
+
+<hr>
+Diff
+<ngx-monaco-diff-editor [options]="editorOptionsDiff" 
+  [(originalModel)]="originalModel"
+  [(modifiedModel)]="modifiedModel"
+  (onInit)="onEditorInit($event)"
+  ></ngx-monaco-diff-editor>

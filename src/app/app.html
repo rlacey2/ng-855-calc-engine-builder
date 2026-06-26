@@ -11,7 +11,7 @@
 
   <div class="flex-grow-1 d-flex overflow-hidden">
 
-    <div class="col-4 border-end p-2">
+    <div class="col-5 border-end p-2">
       <rules-table [rules]="rules()" [selectedId]="selected()?.id" (select)="select($event)" (add)="add()">
       </rules-table>
  
@@ -20,7 +20,7 @@
 
     </div>
 
-    <div class="col-8 d-flex flex-column p-2">
+    <div class="col-7 d-flex flex-column p-2">
 
       <rule-editor [rule]="selected()"></rule-editor>
  

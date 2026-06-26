@@ -4,7 +4,6 @@ import { Component, inject, Input } from '@angular/core';
 //import { ValidationService } from '../../shared/validation.service';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 
-
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
@@ -27,9 +26,9 @@ export class RuleEditorComponent {
 
   error: string | null = null;
 
-  opts = {
+  monacoOptions = {
    // theme: 'vs-dark',
-        theme: 'vs-light',
+    theme: 'vs-light',
     language: 'javascript',
     automaticLayout: true
   }; 

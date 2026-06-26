@@ -78,7 +78,7 @@
       Expression
     </div>
     <div class="flex-grow-1" [class.border]="true" [class.border-danger]="error">
-      <ngx-monaco-editor style="height:70px" [(ngModel)]="rule.expression" [options]="opts"
+      <ngx-monaco-editor style="height:70px" [(ngModel)]="rule.expression" [options]="monacoOptions"
         (ngModelChange)="validate()">
       </ngx-monaco-editor>
     </div>
@@ -89,17 +89,12 @@
       When
     </div>
     <div class="flex-grow-1" [class.border]="true" [class.border-danger]="error">
-      <ngx-monaco-editor style="height:70px" [(ngModel)]="rule.when" [options]="opts" (ngModelChange)="validate()">
+      <ngx-monaco-editor style="height:70px" [(ngModel)]="rule.when" [options]="monacoOptions" (ngModelChange)="validate()">
       </ngx-monaco-editor>
     </div>
   </div>
 
-
-
-
-
-
-
+ 
   @if (error) {
   <div class="text-danger small mt-1">{{error}}</div>
   }
