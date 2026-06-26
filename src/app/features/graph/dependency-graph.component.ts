@@ -47,8 +47,8 @@ const processExecutionChain = (rulesList: any[], scopeName: string) => {
       label: `[${scopeName.toUpperCase()}]\n${rule.id}\nTarget: ${rule.target}`,
       shape: scopeName === 'header' ? 'ellipse' : 'box',
       color: scopeName === 'header' 
-        ? { background: '#ffccd5', border: '#ff4d6d' } 
-        : { background: '#e2f0cb', border: '#b5e2fa' },
+        ? { background: '#e7ee23', border: '#b6a23c' }  // header
+        : { background: '#e2f0cb', border: '#b5e2fa' }, // details row
       margin: 10
     });
 
