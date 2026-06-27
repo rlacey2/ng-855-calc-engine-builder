@@ -6,7 +6,7 @@ import { FormGroup } from "@angular/forms";
 import { CalcEngineConfig } from '../core/engine/types';
 import { CalcEngine } from '../core/engine/calc-engine';
 
-// acts a bridge between the components in the engine builder
+// acts a bridge/router/exchange between the components in the engine builder
 // wiring them altogether, a clearing house for the various state(s) needed
 
 @Injectable({ providedIn: 'root' })
@@ -146,22 +146,27 @@ export class EngineAdapterService {
   }
 
 
-  patch(newCurrent:any) {
+  patch() {
+     console.log('patch')
     // the input data values have changed and are to be patched into the t3Form so next run() will be applied to this data
-
-    
-    console.log('patch')
-    // the user has editted the input data and now wants to make the next version for the execution run.
-  // let newCurrent = this.t3dataFG.get('current')?.getRawValue()
+    // the user has editted the input data and now wants to make the next version for the execution run
+    let newCurrent = this.get_t3dataFG().get('current')?.getRawValue()
     let newJSON = JSON.parse(newCurrent)
+    this.t3FormFG =  this.generateForm(newJSON)
+
+    /*
+   
+ 
+  // let newCurrent = this.t3dataFG.get('current')?.getRawValue()
+ //   let newJSON = JSON.parse(newCurrent)
 
     this.t3FormFG =  this.generateForm(newJSON)
 
     let nv = this.t3FormFG?.getRawValue()
     console.log(nv)
-
+*/
  
   }
   }
 
-}
+ 

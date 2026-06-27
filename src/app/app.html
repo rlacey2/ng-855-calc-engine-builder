@@ -31,7 +31,7 @@
    <mat-expansion-panel [expanded]="panelStates[1]">
     <mat-expansion-panel-header>
       <mat-panel-title>Dependency Graph</mat-panel-title>
-      <button mat-button class="placebo-btn me-5" (click)="$event.stopPropagation()">Placebo</button>
+
     </mat-expansion-panel-header>
    
       <dependency-graph [rulesByScope]="engineAdapterService.rulesByScope()"></dependency-graph>
@@ -42,7 +42,7 @@
    <mat-expansion-panel [expanded]="panelStates[2]">
     <mat-expansion-panel-header>
       <mat-panel-title>Data Inputs to Rules</mat-panel-title>
-      <button mat-button class="placebo-btn me-5" (click)="$event.stopPropagation()">Placebo</button>
+      <button mat-button class="btn btn-sm btn-primary rounded me-5" (click)="patch($event)">Patch</button>
     </mat-expansion-panel-header>
 
       <data-t3 [t3FormFG]="t3FormFG" style="display: block; max-height: 600px; overflow-y: auto;"></data-t3>
@@ -53,7 +53,7 @@
    <mat-expansion-panel [expanded]="panelStates[3]">
     <mat-expansion-panel-header>
       <mat-panel-title>Execution Trace</mat-panel-title>
-      <button mat-button class="placebo-btn me-5" (click)="$event.stopPropagation()">Placebo</button>
+      <button mat-button class="btn btn-sm btn-primary rounded me-5" (click)="calculate($event)">Calculate</button>
     </mat-expansion-panel-header>
     <button class="btn btn-success btn-sm ms-5" (click)="run()">Run</button>
    <trace-viewer [trace]="engineAdapterService.outputTrace()"></trace-viewer>

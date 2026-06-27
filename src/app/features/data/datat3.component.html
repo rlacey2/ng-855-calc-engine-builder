@@ -1,14 +1,7 @@
 @if(t3dataFG) {
 
 <div class="d-flex flex-column">
-
-  <div class="d-flex flex-row">
  
-    <div>
-      <button class="btn btn-sm btn-success mb-2 ms-5" (click)="patch()">Patch</button>
-    </div>
-  </div>
-
   <div>
 
     @if(t3dataFG) {
@@ -21,23 +14,6 @@
 
     }
  
-
-
- 
-
-
-  
-    @if(0) {
-
-    <!-- Wrap it in the form group or add it to an existing container -->
-    <div [formGroup]="t3dataFG" class=" ">
-      <mat-form-field class="w-100">
-        <mat-label>Data Values</mat-label>
-        <!-- Use formControlName instead of ngModel -->
-        <textarea matInput rows="20" class="form-control mb-2" formControlName="current"></textarea>
-      </mat-form-field>
-    </div>
-    }
  
   </div>
 

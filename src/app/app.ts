@@ -151,7 +151,18 @@ panelStates: boolean[] = [true, false, true, false, false];
 
   run() {
     this.engineAdapterService.runExecution()
-   // this.engine = this.engineAdapterService.engine
+   
   }
+
+ patch($event: Event) {
+  $event.stopPropagation() // in the panel header so do not want to toggle the panel
+  this.engineAdapterService.patch()
+ }
+
+
+  calculate($event: Event) {
+  $event.stopPropagation() // in the panel header so do not want to toggle the panel
+  this.engineAdapterService.runExecution()
+ }
 }
 

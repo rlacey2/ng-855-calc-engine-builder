@@ -91,11 +91,11 @@ export class DataT3Component {
     // the user has editted the input data and now wants to make the next version for the execution run
     let newCurrent = this.t3dataFG.get('current')?.getRawValue()
     let newJSON = JSON.parse(newCurrent)
-    this.engineAdapterService.patch(newJSON)
+    this.engineAdapterService.patch()
 
     return
 
-    .
+   
     /*
     let newCurrent = this.t3dataFG.get('current')?.getRawValue()
     let newJSON = JSON.parse(newCurrent)
