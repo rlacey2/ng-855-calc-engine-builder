@@ -1,5 +1,5 @@
 // app.component.ts
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 
 import { RulesTableComponent } from './features/rules/rules-table.component';
 import { RuleEditorComponent } from './features/rules/rule-editor.component';
@@ -53,7 +53,7 @@ export class AppComponent {
 
   editorOptionsStatic = this.monacoOptionsService.editorDefaultOptions
 
-  rules = this.engineAdapterService.rules
+  rules:any = this.engineAdapterService.rules // this is a signal reference
   selected = this.engineAdapterService.selected
 
   testRules: any
@@ -64,6 +64,21 @@ export class AppComponent {
   modifiedModel: any  
 
 panelStates: boolean[] = [true, false, true, false, false];
+
+
+ editorOptions = {theme: 'vs-dark', language: 'json'};
+  rulesMonaco: string = '{"id": 1}';
+
+
+
+// 2. Computed signal (automatically derives and tracks changes)
+  temp1 = computed(() => {
+    console.log('ffffffffffffffffffffffff')
+    this.rulesMonaco = this.engineAdapterService.rules().toString();
+   
+  });
+
+
 
   constructor() {
 
@@ -97,7 +112,7 @@ panelStates: boolean[] = [true, false, true, false, false];
 
 
   add() {
-    this.rules.update(r => [...r, {
+    this.rules.update( (r:any) => [...r, {
       id: crypto.randomUUID().split("-")[0],
       target: '',
       expression: ''
