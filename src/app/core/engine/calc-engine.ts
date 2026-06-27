@@ -170,8 +170,8 @@ export class CalcEngine {
         const compiledExpr = compileDSL(rule.expression);
         const compiledWhen = rule.when ? compileDSL(rule.when) : null;
 
-        console.log(rule.expression)
-        console.log(compiledExpr)
+     //   console.log(rule.expression)
+     //   console.log(compiledExpr)
 
         return {
           ...rule,

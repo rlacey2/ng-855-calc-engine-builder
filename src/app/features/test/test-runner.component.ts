@@ -58,7 +58,7 @@ export class TestRunnerComponent {
     this.engineAdapterService.runExecution()
     this.engine = this.engineAdapterService.engine
 
-    console.log(this.outputTrace())
+   // console.log(this.outputTrace())
 
     return
 

@@ -73,15 +73,13 @@ export class AppComponent {
  console.log('ffffffffffffffffffffffff')
 
 //JSON.parse(this.t3dataFG.getRawValue().current)
-    this.engineAdapterService.setDiffOriginal( originalDataState.getRawValue().current )
-    this.engineAdapterService.setDiffModified(y)
+   // this.engineAdapterService.setDiffOriginal( originalDataState.getRawValue().current )
+   // this.engineAdapterService.setDiffModified(y)
 
    this.originalModel = this.engineAdapterService.originalModel  // no () on the signal yet
-    this.modifiedModel = this.engineAdapterService.modifiedModel  // no () on the signal yet
+   this.modifiedModel = this.engineAdapterService.modifiedModel  // no () on the signal yet
 
   //  console.log(this.originalModel())
-
-   
 
   }
 

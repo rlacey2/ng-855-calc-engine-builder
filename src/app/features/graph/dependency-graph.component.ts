@@ -10,17 +10,18 @@ import { Rule } from '../../core/engine/types';
   standalone: true,
   templateUrl: './dependency-graph.component.html'
 })
-export class DependencyGraphComponent implements AfterViewInit {
+export class DependencyGraphComponent  {
 
   @Input() rules: Rule[] = [];
   @Input() rulesByScope:  { header: [], row: [] }= {header: [], row: [] };
 
   constructor(private el: ElementRef) { }
 
+  /*
   ngAfterViewInit() {
     this.render();
-  }
-
+  } 
+*/
   ngOnChanges() {
     this.render(); 
   }

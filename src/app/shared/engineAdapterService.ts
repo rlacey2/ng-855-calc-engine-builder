@@ -31,8 +31,6 @@ export class EngineAdapterService {
 
   outputTrace = signal<any>(null);
 
- 
-
   t3FormFG: FormGroup = this.t3FormFGService.getT3FormFG();
 
   //t3dataFG: FormGroup
@@ -124,19 +122,20 @@ export class EngineAdapterService {
     // rebuild engine based on current rules
     this.engine = new CalcEngine(this.rules(), this.engineConfig) // prepare the engine's internals
 
-  //  this.t3FormFG = this.engineAdapterService.get_t3FormFG()
+    this.originalModel.set({...this.t3FormFG.getRawValue()})
+    console.log(this.t3FormFG.getRawValue().details[0].subTotal)
 
     const res = this.engine.recalcAll(this.t3FormFG);
 
+    this.modifiedModel.set({...this.t3FormFG.getRawValue()})
+     console.log(this.t3FormFG.getRawValue().details[0].subTotal)
+
+ 
     let trace = this.engine.getTrace()
 
     this.outputTrace.set(trace);
 
     console.log(this.outputTrace().length)
-
   }
-
-
-
 
 }
