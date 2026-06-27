@@ -9,9 +9,19 @@ ngx-monaco-editor {
       }
 
 
+
+/* Pins the first panel to the top of its scroll container */
+.compact-accordion mat-expansion-panel.sticky-panel {
+  position: sticky;
+  top: 0;
+  z-index: 10; /* Keeps it layered above scrolling items */
+  background-color: white; /* Prevents text bleeding through underneath */
+}
+
+
 /* Add a clear gap beneath every panel */
 .compact-accordion mat-expansion-panel {
-  margin-bottom: 4px !important;
+  margin-bottom: 2px !important;
   box-shadow: none; /* Optional: cleans up the border look */
   border: 1px solid #e0e0e0; /* Optional: defines the separate cards */
 }
@@ -31,6 +41,12 @@ ngx-monaco-editor {
 ::v-deep .compact-accordion .mat-content {
   align-items: center;
   justify-content: space-between;
+}
+
+
+/* Force the last panel to respect layout spacing rules */
+.compact-accordion mat-expansion-panel:last-of-type {
+  margin-bottom: 0 !important;
 }
 
 /* styles the placebo button to fit the ultra-thin header */

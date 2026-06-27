@@ -4,7 +4,7 @@
 
 <mat-accordion class="compact-accordion"  multi="true">
   <!-- Rule Builder -->
-  <mat-expansion-panel [expanded]="panelStates[0]">
+  <mat-expansion-panel [expanded]="panelStates[0]" class="sticky-panel">
     <mat-expansion-panel-header>
       <mat-panel-title>Rule Builder</mat-panel-title>
       <button mat-button class="placebo-btn abs-w-10 me-5" (click)="$event.stopPropagation()">Placebo</button>
@@ -21,6 +21,10 @@
       </rules-table>  
       
       <rule-editor [rule]="selected()"></rule-editor>
+
+
+      <hr>
+      Monaco
 
   </div>
 
@@ -39,7 +43,7 @@
   </mat-expansion-panel>
 
   <!-- Data Inputs to Rules -->
-   <mat-expansion-panel [expanded]="panelStates[2]">
+   <mat-expansion-panel [expanded]="panelStates[2]" >
     <mat-expansion-panel-header>
       <mat-panel-title>Data Inputs to Rules</mat-panel-title>
       <button mat-button class="btn btn-sm btn-primary rounded-4 abs-w-70 me-5" (click)="patch($event)">Patch</button>
