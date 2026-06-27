@@ -1,15 +1,16 @@
-import { Component, forwardRef, ViewChild, AfterViewInit, SimpleChanges, Input, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, forwardRef,  SimpleChanges, Input, inject, ChangeDetectorRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
-import { DiffEditorModel, MonacoEditorModule } from 'ngx-monaco-editor-v2';
+import {   MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { FormsModule } from '@angular/forms'; // <-- Import this
+import { MonacoOptionsService } from './MonacoOptionsService';
 
 //import { NgxMonacoEditorComponent } from 'ngx-monaco-editor';
 
 @Component({
   selector: 'monaco-editor-wrapper',
   standalone: true,
-  templateUrl: './MonacoWrapper.component.html',
+  templateUrl: './MonacoEditor.component.html',
   imports: [MonacoEditorModule, FormsModule],
 
 
@@ -29,39 +30,15 @@ export class MonacoWrapperComponent implements ControlValueAccessor {
   @Input() language: string = 'json';
 
   cd = inject(ChangeDetectorRef)
+  monacoOptionsService = inject(MonacoOptionsService)
 
 
   value: string = '';
   disabled: boolean = false;
-  /*
-      theme: 'myCustomTheme',
-      language: 'json',
-      roundedSelection: true,
-      autoIndent: true,
-      folding: true,
-      showFoldingControls: 'always',
-      foldingStrategy: "auto",
-      formatOnPaste: true,
-      formatOnType: true,
-      wordWrap: "on",
-      codeLens: false
-  */
-  editorOptions = {
-    theme: 'vs-dark', language: 'json',
-    roundedSelection: true,
+ 
 
-    folding: true,
-    showFoldingControls: 'always',
-    foldingStrategy: "auto",
-    formatOnPaste: true, // Requires true to activate auto-formatting on paste
-    formatOnType: true,  // Good to have for auto-indentation while typing
-    autoIndent: 'full',
-    wordWrap: "on",
-    codeLens: false,
-    readOnly: false
-  };
-
-
+  editorOptions = this.monacoOptionsService.editorOptions
+  
 
   editorOptionsDiff = {
     theme: 'vs-dark',
@@ -80,15 +57,7 @@ export class MonacoWrapperComponent implements ControlValueAccessor {
     useInlineViewWhenSpaceIsLimited: false // Forces side-by-side even in small spaces
   };
 
-
-
-
-
-  originalModel: DiffEditorModel =   this.jsonDiff ({ "id": "h_total", "type": "aggregation", "scope": "header", "target": "total", "expression": "rows.reduce((s,r)=>s+r.subTotal,0)", "priority": 2 })
-   
- modifiedModel: DiffEditorModel =   this.jsonDiff ({ "id": "h_total", "type": "aggregation", "scope": "header", "target": "total", "expression": "rows.reduce((s,r)=>s+r.subTotal,0)", "priority": 2 })
-
-
+ 
   // Callbacks registered by Angular Forms
   private onChange: (value: string) => void = () => { };
   private onTouched: () => void = () => { };
@@ -156,15 +125,6 @@ export class MonacoWrapperComponent implements ControlValueAccessor {
       }
     });
 
-  }
-
-  jsonDiff(x: object): DiffEditorModel {
- 
-    let dataModel: DiffEditorModel = {
-      code: JSON.stringify(x, null, 2), // '2' adds spacing and newlines
-      language: 'json'
-    };
-    return dataModel;
   }
  
 }

@@ -1,21 +1,37 @@
 import { inject, Injectable, signal } from "@angular/core";
 import { Rule } from "../core/engine/types";
 import { t3FormFGService } from "./t3FormFGService";
-
-
+  
 // acts a bridge between the components in the engine builder
-
-
+// wiring them altogether, a clearing house for the various state(s) needed
+ 
 @Injectable({ providedIn: 'root' })
 export class EngineAdapterService {
 
   t3FormFGService = inject(t3FormFGService)
 
-  public rules = signal<any[]>([]);
-  public selected = signal<any>(null);
+  public rules = signal<any[]>([]);     // rules to populate the table of rules
+  public selected = signal<any>(null);  // selected row in the table of rules
+
+  public originalModel = signal<any>(null);
+  public modifiedModel = signal<any>(null);
 
   t3FormFG = this.t3FormFGService.getT3FormFG();
 
+  /*
+  originalModel: DiffEditorModel = this.jsonDiff({ "id": "h_total", "type": "aggregation", "scope": "header", "target": "total", "expression": "rows.reduce((s,r)=>s+r.subTotal,0)", "priority": 2 })
+
+  modifiedModel: DiffEditorModel = this.jsonDiff({ "id": "h_total", "type": "aggregation", "scope": "header", "target": "total", "expression": "rows.reduce((s,r)=>s+r.subTotal,0)", "priority": 2 })
+
+  */
+
+  setDiffOriginal(x: any) {
+    this.originalModel.set(x)
+  }
+
+  setDiffModified(x: any) {
+    this.modifiedModel.set(x)
+  }
 
   setRulesAgenda(rulesToUse: Rule[]) {
     // sorted list of rules
@@ -33,9 +49,7 @@ export class EngineAdapterService {
 
   }
 
-
   sortRules(rules: Rule[]): Rule[] {
-
 
     const sortedInput = [...rules].sort((a, b) => {
       const pA = 1000 + (a.priority ?? 999);
@@ -77,8 +91,12 @@ export class EngineAdapterService {
     return this.t3FormFG
   }
 
+  get_t3dataform() {
+   return  this.t3FormFGService.get_t3dataform()
+  }
+
   generateForm(newJSON: any) {
-    this.t3FormFG =  this.t3FormFGService.generateForm(newJSON)
+    this.t3FormFG = this.t3FormFGService.generateForm(newJSON)
     return this.t3FormFG
   }
 

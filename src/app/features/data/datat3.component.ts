@@ -9,7 +9,8 @@ import { MatInputModule } from '@angular/material/input';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { EngineAdapterService } from '../../shared/engineAdapterService';
-import { MonacoWrapperComponent } from '../MonacoWrapper/MonacoWrapper.component';
+import { MonacoWrapperComponent } from '../MonacoEditor/MonacoEditor.component';
+import { MonacoDiffEditorComponent } from '../MonacoEditor/MonacoDiffEditor.component';
 
 @Component({
   selector: 'data-t3',
@@ -100,6 +101,7 @@ export class DataT3Component {
       const rawData = this.t3FormFG?.getRawValue();
       this.t3data = JSON.stringify(rawData, null, 2);
       this.t3dataform.patchValue({ current: this.t3data }, { emitEvent: false })
+      this.engineAdapterService.setDiffOriginal(this.t3data )
 
       //   console.log(this.t3dataform.getRawValue())
       this.cd.detectChanges();

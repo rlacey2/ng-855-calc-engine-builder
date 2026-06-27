@@ -14,17 +14,20 @@
     <div class="col-5 border-end p-2">
       <rules-table [rules]="rules()" [selectedId]="selected()?.id" (select)="select($event)" (add)="add()">
       </rules-table>
+
+      <data-t3 [t3FormFG]="t3FormFG" style="display: block; max-height: 600px; overflow-y: auto;"></data-t3>
  
-      <data-t3 [t3FormFG]="t3FormFG" style="display: block; max-height: 600px; overflow-y: auto;"></data-t3> 
-
-
+      @if(t3dataform) {
+      <monaco-diff-editor [originalModel]="originalModel" [modifiedModel]="modifiedModel()"></monaco-diff-editor>
+      }
     </div>
 
     <div class="col-7 d-flex flex-column p-2">
 
       <rule-editor [rule]="selected()"></rule-editor>
- 
-      <test-runner [rules]="rules()" [t3FormFG]="t3FormFG" style="display: block; max-height: 1400px; overflow-y: auto;">
+
+      <test-runner [rules]="rules()" [t3FormFG]="t3FormFG"
+        style="display: block; max-height: 1400px; overflow-y: auto;">
       </test-runner>
 
     </div>

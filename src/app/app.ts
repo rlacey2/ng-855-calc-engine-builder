@@ -7,10 +7,11 @@ import { TestRunnerComponent } from './features/test/test-runner.component';
 import { DependencyGraphComponent } from './features/graph/dependency-graph.component';
 
 import { ruleSet } from './core/engine/rules'
-import { t3FormFGService } from './shared/t3FormFGService';
+
 import { DataT3Component } from './features/data/datat3.component';
 import { Rule } from './core/engine/types';
 import { EngineAdapterService } from './shared/engineAdapterService';
+import { MonacoDiffEditorComponent } from "./features/MonacoEditor/MonacoDiffEditor.component";
 
 @Component({
   selector: 'app-root',
@@ -20,7 +21,8 @@ import { EngineAdapterService } from './shared/engineAdapterService';
     RuleEditorComponent,
     TestRunnerComponent,
     //  DependencyGraphComponent
-    DataT3Component
+    DataT3Component,
+    MonacoDiffEditorComponent
   ],
   templateUrl: './app.html'
 })
@@ -37,9 +39,11 @@ export class AppComponent {
 
   testRules: any
 
-  t3FormFGService = inject(t3FormFGService)
+  t3FormFG 
+  t3dataform 
+  originalModel: any 
+  modifiedModel   
 
-  t3FormFG: any;
 
   constructor() {
 
@@ -51,13 +55,29 @@ export class AppComponent {
     // the rules are separate form the engine that will consume them
     // i.e. the DSL is used to create the execution of rules that meet the syntax
 
-    // let sortedRules = this.sortRules(rulesToUse)
 
-    // this.rules.set(JSON.parse(rulesAsString));
-    //  this.rules.set(sortedRules);
+     this.t3FormFG = this.engineAdapterService.get_t3FormFG()
+     this.t3dataform = this.engineAdapterService.get_t3dataform()
 
-    // this.t3FormFG = this.t3FormFGService.getT3FormFG();
-    this.t3FormFG = this.engineAdapterService.get_t3FormFG()
+  // let x =  { "id": "h_total", "type": "aggregation", "scope": "header", "target": "total", "expression": "rows.reduce((s,r)=>s+r.subTotal,0)", "priority": 2 }
+    let y =  { "id": "h_total22", "type": "aggregation", "scope": "header", "target": "total", "expression": "rows.reduce((s,r)=>s+r.subTotal,0)", "priority": 2 }
+    
+    let originalDataState = this.engineAdapterService.get_t3dataform()
+
+  //  originalModel: DiffEditorModel =   this.jsonDiff ({ "id": "h_total", "type": "aggregation", "scope": "header", "target": "total", "expression": "rows.reduce((s,r)=>s+r.subTotal,0)", "priority": 2 })
+   
+ //modifiedModel: DiffEditorModel =   this.jsonDiff ({ "id": "h_total", "type": "aggregation", "scope": "header", "target": "total", "expression": "rows.reduce((s,r)=>s+r.subTotal,0)", "priority": 2 })
+
+ console.log('ffffffffffffffffffffffff')
+    this.engineAdapterService.setDiffOriginal(this.t3dataform.getRawValue().current)
+    this.engineAdapterService.setDiffModified(y)
+
+   this.originalModel = this.engineAdapterService.originalModel  // no () on the signal yet
+    this.modifiedModel = this.engineAdapterService.modifiedModel  // no () on the signal yet
+
+  //  console.log(this.originalModel())
+
+   
 
   }
 
@@ -120,4 +140,3 @@ export class AppComponent {
 
 }
 
- 

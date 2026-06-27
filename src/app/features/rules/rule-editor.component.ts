@@ -27,8 +27,8 @@ export class RuleEditorComponent {
   error: string | null = null;
 
   monacoOptions = {
-   // theme: 'vs-dark',
-    theme: 'vs-light',
+  //  theme: 'vs-dark',
+  //  theme: 'vs-light',
     language: 'javascript',
     automaticLayout: true
   }; 
