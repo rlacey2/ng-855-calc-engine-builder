@@ -78,12 +78,12 @@ export class DataT3Component {
       // Data Inputs to Rules expects a string, but formatted as JSON
       this.t3dataFG.patchValue({ current: this.t3data }, { emitEvent: false })
 
-      this.engineAdapterService.setDiffOriginal(this.t3data )
+   //   this.engineAdapterService.setDiffOriginal(this.t3data )
 
       //   console.log(this.t3dataFG.getRawValue())
       this.cd.detectChanges();
     });
-
+ 
   }
  
   patch() {

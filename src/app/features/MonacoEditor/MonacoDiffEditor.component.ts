@@ -67,16 +67,18 @@ export class MonacoDiffEditorComponent implements ControlValueAccessor {
     console.log('ngOnChanges')
     console.log(changes)
 
+ 
+
  this.originalDiffEditorModel  = this.jsonDiff(changes['originalModel'].currentValue ) 
  this.modifiedDiffEditorModel  = this.jsonDiff(changes['modifiedModel'].currentValue ) 
-  
+  /*
     if (changes['originalModel'] &&  changes['originalModel'].firstChange) {
         this.originalDiffEditorModel  = this.jsonDiff(changes['originalModel'].currentValue ) 
     }
     if (changes['modifiedModel'] &&  changes['modifiedModel'].firstChange) {
         this.modifiedDiffEditorModel  = this.jsonDiff(changes['modifiedModel'].currentValue ) 
     }
-    
+    */
     /*
 
     if (changes['language'] && !changes['language'].firstChange) {

@@ -26,8 +26,8 @@ export class EngineAdapterService {
   public rules = signal<any[]>([]);     // rules to populate the table of rules
   public selected = signal<any>(null);  // selected row in the table of rules
 
-  public originalModel = signal<any>(null);
-  public modifiedModel = signal<any>(null);
+  public originalModel = signal<any>({});
+  public modifiedModel = signal<any>({});
 
   outputTrace = signal<any>(null);
 
@@ -43,6 +43,7 @@ export class EngineAdapterService {
   */
 
   setDiffOriginal(x: any) {
+    console.log('setDiffOriginal')
     this.originalModel.set(x)
   }
 

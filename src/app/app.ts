@@ -44,7 +44,7 @@ export class AppComponent {
   t3FormFG 
   t3dataFG 
   originalModel: any 
-  modifiedModel   
+  modifiedModel: any  
 
 
   constructor() {
