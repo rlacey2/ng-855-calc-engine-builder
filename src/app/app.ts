@@ -1,5 +1,5 @@
 // app.component.ts
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 
 import { RulesTableComponent } from './features/rules/rules-table.component';
 import { RuleEditorComponent } from './features/rules/rule-editor.component';
@@ -80,9 +80,31 @@ panelStates: boolean[] = [true, false, true, false, false];
 
 
 
+
+
+/*
+rulesMonaco = computed(() => {
+  console.log('ffffffffffffffffffffffff'); // Will print ONLY when read
+  return this.engineAdapterService.rules().toString();
+});
+*/
   constructor() {
 
     console.log('constructor')
+
+
+    effect(() => {
+      console.log('......................')
+      const currentJsonObject = this.engineAdapterService.rules()
+      // Pretty-print with 2-space indentation
+      this.rulesMonaco = JSON.stringify(currentJsonObject, null, 2); 
+    });
+
+
+
+
+
+
     const rulesToUse = ruleSet.sequentialSteps2
     let sortedRules = this.engineAdapterService.setRulesAgenda(rulesToUse)
 
@@ -107,6 +129,11 @@ panelStates: boolean[] = [true, false, true, false, false];
  
    this.originalModel = this.engineAdapterService.originalModel  // no () on the signal yet
    this.modifiedModel = this.engineAdapterService.modifiedModel  // no () on the signal yet
+
+   setTimeout( () => {
+     this.rulesMonaco = '{"idssssss": 1}';
+     
+   }, 4000)
  
   }
 
