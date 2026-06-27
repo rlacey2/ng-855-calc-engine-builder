@@ -54,7 +54,7 @@ export class TestRunnerComponent {
   }
 
   run() {
-    this.engineAdapterService.runExecution()
+    this.engineAdapterService.calculate()
     this.engine = this.engineAdapterService.engine
   }
 }

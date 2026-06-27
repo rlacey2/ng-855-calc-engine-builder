@@ -7,7 +7,7 @@
   <mat-expansion-panel [expanded]="panelStates[0]">
     <mat-expansion-panel-header>
       <mat-panel-title>Rule Builder</mat-panel-title>
-      <button mat-button class="placebo-btn me-5" (click)="$event.stopPropagation()">Placebo</button>
+      <button mat-button class="placebo-btn abs-w-10 me-5" (click)="$event.stopPropagation()">Placebo</button>
     </mat-expansion-panel-header>
     
   <div class="d-flex flex-column justify-content-between p-2 border-bottom">
@@ -42,7 +42,7 @@
    <mat-expansion-panel [expanded]="panelStates[2]">
     <mat-expansion-panel-header>
       <mat-panel-title>Data Inputs to Rules</mat-panel-title>
-      <button mat-button class="btn btn-sm btn-primary rounded me-5" (click)="patch($event)">Patch</button>
+      <button mat-button class="btn btn-sm btn-primary rounded-4 abs-w-70 me-5" (click)="patch($event)">Patch</button>
     </mat-expansion-panel-header>
 
       <data-t3 [t3FormFG]="t3FormFG" style="display: block; max-height: 600px; overflow-y: auto;"></data-t3>
@@ -53,9 +53,9 @@
    <mat-expansion-panel [expanded]="panelStates[3]">
     <mat-expansion-panel-header>
       <mat-panel-title>Execution Trace</mat-panel-title>
-      <button mat-button class="btn btn-sm btn-primary rounded me-5" (click)="calculate($event)">Calculate</button>
+      <button mat-button class="btn btn-sm btn-primary rounded-4 abs-w-70 me-5" (click)="calculate($event)">Calculate</button>
     </mat-expansion-panel-header>
-    <button class="btn btn-success btn-sm ms-5" (click)="run()">Run</button>
+ 
    <trace-viewer [trace]="engineAdapterService.outputTrace()"></trace-viewer>
   </mat-expansion-panel>
 
@@ -63,7 +63,7 @@
    <mat-expansion-panel [expanded]="panelStates[4]">
     <mat-expansion-panel-header>
       <mat-panel-title>Difference</mat-panel-title>
-      <button mat-button class="placebo-btn me-5" (click)="$event.stopPropagation()">Placebo</button>
+   
     </mat-expansion-panel-header>
       @if(t3dataFG) {
       <monaco-diff-editor [originalModel]="originalModel()" [modifiedModel]="modifiedModel()"></monaco-diff-editor>
@@ -75,6 +75,5 @@
 
 <div class="container-fluid d-flex flex-column vh-100">
 
-
-
+ 
 </div>

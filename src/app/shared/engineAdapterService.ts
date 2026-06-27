@@ -124,7 +124,7 @@ export class EngineAdapterService {
     this.rulesByScope.set(this.engine.get_rulesByScope())
   }
 
-  runExecution() {
+  calculate() {
     console.log('expects form data')
     // rebuild engine based on current rules
     this.engine = new CalcEngine(this.rules(), this.engineConfig) // prepare the engine's internals

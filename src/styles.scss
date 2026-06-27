@@ -1,4 +1,9 @@
-      ngx-monaco-editor {
+.abs-w-70 {
+  min-width: 70px;
+  max-width: 70px;
+
+}
+ngx-monaco-editor {
         height: 100%;
         width: 100%;
       }
@@ -29,8 +34,8 @@
 }
 
 /* styles the placebo button to fit the ultra-thin header */
-.placebo-btn {
-  height: 16px;
+.placebo-btn , .btn-sm{
+  height: 22px;
   line-height: 14px;
   padding: 0 2px;
   font-size: 12px;
