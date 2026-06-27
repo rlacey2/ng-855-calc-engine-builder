@@ -28,7 +28,6 @@ import { JsonPipe } from '@angular/common';
 
 export class MonacoDiffEditorComponent implements ControlValueAccessor {
 
-
 //  @Input() language: string = 'json';
   //  @Input() originalModel: Signal<string>;
   //  @Input() modifiedModel: Signal<string>;
@@ -67,14 +66,15 @@ export class MonacoDiffEditorComponent implements ControlValueAccessor {
   ngOnChanges(changes: SimpleChanges): void {
     console.log('ngOnChanges')
     console.log(changes)
-
-    
+ this.originalDiffEditorModel  = this.jsonDiff(changes['originalModel'].currentValue ) 
+  
     if (changes['originalModel'] &&  changes['originalModel'].firstChange) {
         this.originalDiffEditorModel  = this.jsonDiff(changes['originalModel'].currentValue ) 
     }
     if (changes['modifiedModel'] &&  changes['modifiedModel'].firstChange) {
         this.modifiedDiffEditorModel  = this.jsonDiff(changes['modifiedModel'].currentValue ) 
     }
+    
     /*
 
     if (changes['language'] && !changes['language'].firstChange) {

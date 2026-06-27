@@ -1,29 +1,24 @@
-     
-     
-     <div> 
-       <div class="d-flex">
-        <div class="sectionHeader">Execution Trace</div>
-        <button class="btn btn-success btn-sm ms-5" (click)="run()">Run</button>
-       </div>
-     
-     <div>
-    @if(engine)  {
-      
-      <div class="border-top p-2">
-        <div>
-          Dependency Graph
-        </div>
-        <dependency-graph [rules]="[]" [rulesByScope]="engine.get_rulesByScope()"></dependency-graph>
+<div>
+  <div class="d-flex">
+    <div class="sectionHeader">Execution Trace</div>
+    <button class="btn btn-success btn-sm ms-5" (click)="run()">Run</button>
+  </div>
+
+  <div>
+    @if(engine) {
+
+    <div class="border-top p-2">
+      <div>
+        Dependency Graph
       </div>
-  
-  <div class="border-top p-2">
+      <dependency-graph [rules]="[]" [rulesByScope]="engine.get_rulesByScope()"></dependency-graph>
+    </div>
 
-   
+    <div class="border-top p-2">
+ 
+      <trace-viewer [trace]="outputTrace()"></trace-viewer>
 
-  <trace-viewer [trace]="output()"></trace-viewer>
-
+    </div>
+    }
   </div>
-}
 </div>
-  </div>
-  

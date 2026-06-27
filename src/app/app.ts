@@ -12,11 +12,13 @@ import { DataT3Component } from './features/data/datat3.component';
 import { Rule } from './core/engine/types';
 import { EngineAdapterService } from './shared/engineAdapterService';
 import { MonacoDiffEditorComponent } from "./features/MonacoEditor/MonacoDiffEditor.component";
+import { JsonPipe } from '@angular/common';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
+    JsonPipe,
     RulesTableComponent,
     RuleEditorComponent,
     TestRunnerComponent,
@@ -40,7 +42,7 @@ export class AppComponent {
   testRules: any
 
   t3FormFG 
-  t3dataform 
+  t3dataFG 
   originalModel: any 
   modifiedModel   
 
@@ -57,19 +59,21 @@ export class AppComponent {
 
 
      this.t3FormFG = this.engineAdapterService.get_t3FormFG()
-     this.t3dataform = this.engineAdapterService.get_t3dataform()
+     this.t3dataFG = this.engineAdapterService.get_t3dataFG()
 
   // let x =  { "id": "h_total", "type": "aggregation", "scope": "header", "target": "total", "expression": "rows.reduce((s,r)=>s+r.subTotal,0)", "priority": 2 }
     let y =  { "id": "h_total22", "type": "aggregation", "scope": "header", "target": "total", "expression": "rows.reduce((s,r)=>s+r.subTotal,0)", "priority": 2 }
     
-    let originalDataState = this.engineAdapterService.get_t3dataform()
+    let originalDataState = this.engineAdapterService.get_t3dataFG()
 
   //  originalModel: DiffEditorModel =   this.jsonDiff ({ "id": "h_total", "type": "aggregation", "scope": "header", "target": "total", "expression": "rows.reduce((s,r)=>s+r.subTotal,0)", "priority": 2 })
    
  //modifiedModel: DiffEditorModel =   this.jsonDiff ({ "id": "h_total", "type": "aggregation", "scope": "header", "target": "total", "expression": "rows.reduce((s,r)=>s+r.subTotal,0)", "priority": 2 })
 
  console.log('ffffffffffffffffffffffff')
-    this.engineAdapterService.setDiffOriginal(this.t3dataform.getRawValue().current)
+
+//JSON.parse(this.t3dataFG.getRawValue().current)
+    this.engineAdapterService.setDiffOriginal( originalDataState.getRawValue().current )
     this.engineAdapterService.setDiffModified(y)
 
    this.originalModel = this.engineAdapterService.originalModel  // no () on the signal yet

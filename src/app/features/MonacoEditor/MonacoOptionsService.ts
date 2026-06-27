@@ -3,19 +3,33 @@ import { Injectable } from "@angular/core";
 @Injectable({ providedIn: 'root' })
 export class MonacoOptionsService {
 
-      /*
-      theme: 'myCustomTheme',
-      language: 'json',
-      roundedSelection: true,
-      autoIndent: true,
-      folding: true,
-      showFoldingControls: 'always',
-      foldingStrategy: "auto",
-      formatOnPaste: true,
-      formatOnType: true,
-      wordWrap: "on",
-      codeLens: false
-  */
+  /*
+  theme: 'myCustomTheme',
+  language: 'json',
+  roundedSelection: true,
+  autoIndent: true,
+  folding: true,
+  showFoldingControls: 'always',
+  foldingStrategy: "auto",
+  formatOnPaste: true,
+  formatOnType: true,
+  wordWrap: "on",
+  codeLens: false
+*/
+ 
+  public editorDefaultOptions = {
+    language: 'json',
+    roundedSelection: true,
+    autoIndent: true,
+    folding: true,
+    showFoldingControls: 'always',
+    foldingStrategy: "auto",
+    formatOnPaste: true,
+    formatOnType: true,
+    wordWrap: "on",
+    codeLens: false
+  }
+ 
   public editorOptions = {
     theme: 'vs-dark', language: 'json',
     roundedSelection: true,
@@ -30,7 +44,8 @@ export class MonacoOptionsService {
     readOnly: false
   };
 
-   public editorOptionsDiff = {
+
+  public editorOptionsDiff = {
     theme: 'vs-dark',
     // language: 'json',
     roundedSelection: true,
@@ -47,4 +62,15 @@ export class MonacoOptionsService {
     useInlineViewWhenSpaceIsLimited: false // Forces side-by-side even in small spaces
   };
 
-    }
+
+
+  mergeMonacoOptions(partialOptions: any) {
+    let x = {
+      ...this.editorDefaultOptions,
+      ...partialOptions
+    };
+    console.log(x)
+    return x
+  }
+
+}

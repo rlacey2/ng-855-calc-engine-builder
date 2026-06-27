@@ -1,14 +1,27 @@
 import { inject, Injectable, signal } from "@angular/core";
 import { Rule } from "../core/engine/types";
 import { t3FormFGService } from "./t3FormFGService";
-  
+import { FormGroup } from "@angular/forms";
+
+import { CalcEngineConfig } from '../core/engine/types';
+import { CalcEngine } from '../core/engine/calc-engine';
+
 // acts a bridge between the components in the engine builder
 // wiring them altogether, a clearing house for the various state(s) needed
- 
+
 @Injectable({ providedIn: 'root' })
 export class EngineAdapterService {
 
   t3FormFGService = inject(t3FormFGService)
+
+  engine: any;
+
+  engineConfig: CalcEngineConfig = {
+    rounding: 4,
+    roundingMode: 'final-only',
+    debug: true
+  }
+
 
   public rules = signal<any[]>([]);     // rules to populate the table of rules
   public selected = signal<any>(null);  // selected row in the table of rules
@@ -16,7 +29,13 @@ export class EngineAdapterService {
   public originalModel = signal<any>(null);
   public modifiedModel = signal<any>(null);
 
-  t3FormFG = this.t3FormFGService.getT3FormFG();
+  outputTrace = signal<any>(null);
+
+ 
+
+  t3FormFG: FormGroup = this.t3FormFGService.getT3FormFG();
+
+  //t3dataFG: FormGroup
 
   /*
   originalModel: DiffEditorModel = this.jsonDiff({ "id": "h_total", "type": "aggregation", "scope": "header", "target": "total", "expression": "rows.reduce((s,r)=>s+r.subTotal,0)", "priority": 2 })
@@ -31,6 +50,10 @@ export class EngineAdapterService {
 
   setDiffModified(x: any) {
     this.modifiedModel.set(x)
+  }
+
+  updateRulesTable() {
+    this.setRulesAgenda(this.rules())
   }
 
   setRulesAgenda(rulesToUse: Rule[]) {
@@ -81,23 +104,39 @@ export class EngineAdapterService {
 
   }
 
-
-  updateRulesTable() {
-    this.setRulesAgenda(this.rules())
-  }
-
   get_t3FormFG() {
     this.t3FormFG = this.t3FormFGService.getT3FormFG();
     return this.t3FormFG
   }
 
-  get_t3dataform() {
-   return  this.t3FormFGService.get_t3dataform()
+  get_t3dataFG() {
+    return this.t3FormFGService.get_t3dataFG()
   }
 
   generateForm(newJSON: any) {
     this.t3FormFG = this.t3FormFGService.generateForm(newJSON)
     return this.t3FormFG
   }
+
+
+  runExecution() {
+    console.log('expects form data')
+    // rebuild engine based on current rules
+    this.engine = new CalcEngine(this.rules(), this.engineConfig) // prepare the engine's internals
+
+  //  this.t3FormFG = this.engineAdapterService.get_t3FormFG()
+
+    const res = this.engine.recalcAll(this.t3FormFG);
+
+    let trace = this.engine.getTrace()
+
+    this.outputTrace.set(trace);
+
+    console.log(this.outputTrace().length)
+
+  }
+
+
+
 
 }

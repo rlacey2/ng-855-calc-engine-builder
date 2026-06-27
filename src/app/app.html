@@ -16,9 +16,11 @@
       </rules-table>
 
       <data-t3 [t3FormFG]="t3FormFG" style="display: block; max-height: 600px; overflow-y: auto;"></data-t3>
- 
-      @if(t3dataform) {
-      <monaco-diff-editor [originalModel]="originalModel" [modifiedModel]="modifiedModel()"></monaco-diff-editor>
+
+      @if(t3dataFG) {
+
+
+      <monaco-diff-editor [originalModel]="originalModel()" [modifiedModel]="modifiedModel()"></monaco-diff-editor>
       }
     </div>
 

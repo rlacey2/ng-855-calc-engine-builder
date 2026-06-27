@@ -1,6 +1,6 @@
 // features/test/test-runner.component.ts
 import { Component, inject, Input, signal } from '@angular/core';
- 
+
 import { Rule } from '../../core/engine/types';
 import { CalcEngineConfig } from '../../core/engine/types';
 import { CalcEngine } from '../../core/engine/calc-engine';
@@ -15,9 +15,9 @@ import { EngineAdapterService } from '../../shared/engineAdapterService';
   standalone: true,
   templateUrl: './test-runner.component.html',
   imports: [
-  //  JsonPipe,
-     TraceViewerComponent, DependencyGraphComponent],
-  
+    //  JsonPipe,
+    TraceViewerComponent, DependencyGraphComponent],
+
 })
 export class TestRunnerComponent {
 
@@ -26,10 +26,9 @@ export class TestRunnerComponent {
 
   engineAdapterService = inject(EngineAdapterService)
 
-  output = signal<any>(null);
+ // outputTrace = signal<any>(null);
 
-
-
+  outputTrace = this.engineAdapterService.outputTrace
 
   testData = {
     // 🔴 should come from your t3FormData defaults
@@ -37,7 +36,7 @@ export class TestRunnerComponent {
     // or specific test data if that is not available
   };
 
-    engineConfig: CalcEngineConfig = {
+  engineConfig: CalcEngineConfig = {
     rounding: 4,
     roundingMode: 'final-only',
     debug: true
@@ -47,7 +46,7 @@ export class TestRunnerComponent {
   // engine = createEngine(this.rules, this.engineConfig);
 
   // engine = new CalcEngine(this.rules, this.engineConfig) // prepare the engine's internals
-  
+
   engine: any;
 
   constructor() {
@@ -55,6 +54,14 @@ export class TestRunnerComponent {
   }
 
   run() {
+
+    this.engineAdapterService.runExecution()
+    this.engine = this.engineAdapterService.engine
+
+    console.log(this.outputTrace())
+
+    return
+
     console.log('expects form data')
     // rebuild engine based on current rules
     this.engine = new CalcEngine(this.rules, this.engineConfig) // prepare the engine's internals
@@ -65,9 +72,9 @@ export class TestRunnerComponent {
 
     let trace = this.engine.getTrace()
 
-    this.output.set(trace);
+    this.outputTrace.set(trace);
 
-console.log(this.output().length)
- 
+    console.log(this.outputTrace().length)
+
   }
 }

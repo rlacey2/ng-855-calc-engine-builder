@@ -18,7 +18,7 @@ export class t3FormFGService {
 
 
   // 1. Initialize the form group to satisfy the TypeScript compiler
-  t3dataform = new FormGroup({
+  t3dataFG = new FormGroup({
     current: new FormControl('')
   });
 
@@ -29,8 +29,8 @@ export class t3FormFGService {
     return this.form; // lots of controls i.e. replicating pattern of live inputs to public
   }
 
-  get_t3dataform() { // single control, to allow cheap testing 
-    return this.t3dataform
+  get_t3dataFG() { // single control, to allow cheap testing 
+    return this.t3dataFG
   }
 
 

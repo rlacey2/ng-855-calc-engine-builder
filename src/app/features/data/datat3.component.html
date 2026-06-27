@@ -1,4 +1,4 @@
-@if(t3dataform) {
+@if(t3dataFG) {
 
 <div class="d-flex flex-column">
 
@@ -13,9 +13,9 @@
 
   <div>
 
-    @if(t3dataform) {
+    @if(t3dataFG) {
 
-    <form [formGroup]="t3dataform">
+    <form [formGroup]="t3dataFG">
 
       <monaco-editor-wrapper formControlName="current" [options]="editorOptionsStatic" [language]="'json'"></monaco-editor-wrapper>
 
@@ -32,7 +32,7 @@
     @if(0) {
 
     <!-- Wrap it in the form group or add it to an existing container -->
-    <div [formGroup]="t3dataform" class=" ">
+    <div [formGroup]="t3dataFG" class=" ">
       <mat-form-field class="w-100">
         <mat-label>Data Values</mat-label>
         <!-- Use formControlName instead of ngModel -->
