@@ -1,5 +1,6 @@
 {
   "name": "angular-starter",
+  "version": "20260626",
   "private": true,
   "scripts": {
     "preinstall": "npx only-allow pnpm",
@@ -16,6 +17,7 @@
   },
   "dependencies": {
     "@angular/animations": "^21.1.2",
+    "@angular/cdk": "^22.0.2",
     "@angular/common": "^22.0.2",
     "@angular/compiler": "^22.0.2",
     "@angular/forms": "^22.0.2",

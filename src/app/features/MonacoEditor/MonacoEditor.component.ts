@@ -57,7 +57,7 @@ export class MonacoWrapperComponent implements ControlValueAccessor {
     useInlineViewWhenSpaceIsLimited: false // Forces side-by-side even in small spaces
   };
 
- 
+
   // Callbacks registered by Angular Forms
   private onChange: (value: string) => void = () => { };
   private onTouched: () => void = () => { };

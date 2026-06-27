@@ -13,6 +13,8 @@ import { Rule } from './core/engine/types';
 import { EngineAdapterService } from './shared/engineAdapterService';
 import { MonacoDiffEditorComponent } from "./features/MonacoEditor/MonacoDiffEditor.component";
 import { JsonPipe } from '@angular/common';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { TraceViewerComponent } from "./features/trace/trace-viewer.component";
 
 @Component({
   selector: 'app-root',
@@ -24,8 +26,11 @@ import { JsonPipe } from '@angular/common';
     TestRunnerComponent,
     //  DependencyGraphComponent
     DataT3Component,
-    MonacoDiffEditorComponent
-  ],
+    MonacoDiffEditorComponent,
+    MatExpansionModule,
+    DependencyGraphComponent,
+    TraceViewerComponent
+],
   templateUrl: './app.html'
 })
 
@@ -46,13 +51,18 @@ export class AppComponent {
   originalModel: any 
   modifiedModel: any  
 
+panelStates: boolean[] = [true, false, true, false, false];
 
   constructor() {
 
+    console.log('constructor')
     const rulesToUse = ruleSet.sequentialSteps2
     let sortedRules = this.engineAdapterService.setRulesAgenda(rulesToUse)
 
-    const rulesAsString = JSON.stringify(rulesToUse)
+   // const rulesAsString = JSON.stringify(rulesToUse)
+
+    this.engineAdapterService.engineInitialise(sortedRules)
+
 
     // the rules are separate form the engine that will consume them
     // i.e. the DSL is used to create the execution of rules that meet the syntax
@@ -139,6 +149,9 @@ export class AppComponent {
 
   }
 
-
+  run() {
+    this.engineAdapterService.runExecution()
+   // this.engine = this.engineAdapterService.engine
+  }
 }
 

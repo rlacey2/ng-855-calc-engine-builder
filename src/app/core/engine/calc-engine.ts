@@ -150,15 +150,21 @@ function compileDSL(exprString: string) {  // Domain Specific Language i.e. a gr
 export class CalcEngine {
   // an engine should be associated with a form.
   // coded currently that the engine key functions are passed the form, so one engine is reusable
-  private rulesByScope: { row: any[]; header: any[] };
-  private config: CalcEngineConfig;
-  private roundingMode: string;
-  private debug: boolean;
+  private rulesByScope: { row: any[]; header: any[] } = { row: [] , header: [] };
+  private config: CalcEngineConfig = {};
+  private roundingMode: string = 'none';
+  private debug: boolean = false;
   private traceLog: any[] = [];
 
   constructor(rules: Rule[], engineConfig: CalcEngineConfig = {}) {
+ 
+    this.createEngine(rules, engineConfig)
+ 
+  }
 
-    console.log("ensure disabled/hidden fields are available to the logic")
+
+  createEngine(rules: Rule[], engineConfig: CalcEngineConfig = {}) {
+       console.log("ensure disabled/hidden fields are available to the logic")
 
     this.config = engineConfig ?? {};
     this.roundingMode = this.config.roundingMode ?? 'none';
@@ -187,7 +193,7 @@ export class CalcEngine {
     };
   }
 
-
+ 
  get_rulesByScope() {
   return this.rulesByScope
  }
@@ -315,235 +321,7 @@ private buildExecutionOrder(rules: any[]) {
 
   return result.map(({ _internalDeps, ...cleanRule }) => cleanRule);
 }
-
-
-private ZZbuildExecutionOrder(rules: any[]) {
-  console.log('buildExecutionOrder');
-
-  const result: any[] = [];
-  const visited = new Set<string>();
-  const visiting = new Set<string>();
-
-  // 🔑 Unique composite key helper for full tracking
-  const getKey = (r: any) => `${r.scope}:${r.target}:${r.id}`;
-
-  // 🗺️ Build scope-aware maps mapping to ARRAYS of rules
-  const rowTargetMap = new Map<string, any[]>();
-  const headerTargetMap = new Map<string, any[]>();
-
-  for (const r of rules) {
-    const map = r.scope === 'row' ? rowTargetMap : headerTargetMap;
-    if (!map.has(r.target)) {
-      map.set(r.target, []);
-    }
-    map.get(r.target)!.push(r);
-  }
-
-  // 🔍 Dependency resolver (returns all matching rules)
-  const resolveDependencies = (rule: any, dep: string): any[] => {
-    if (rule.scope === 'row') {
-      // row can depend on row OR header
-      return [...(rowTargetMap.get(dep) ?? []), ...(headerTargetMap.get(dep) ?? [])];
-    }
-
-    if (rule.scope === 'header') {
-      // header should only depend on header
-      return headerTargetMap.get(dep) ?? [];
-    }
-
-    return [];
-  };
-
-  // 🔄 DFS (topological sort)
-  const visit = (rule: any) => {
-    const key = getKey(rule);
-
-    if (visited.has(key)) return;
-
-    if (visiting.has(key)) {
-      throw new Error(`❌ Circular dependency detected at ${key}`);
-    }
-
-    visiting.add(key);
-
-    // visit all matching dependency rules first
-    for (const dep of rule.dependsOn ?? []) {
-      const depRules = resolveDependencies(rule, dep);
-      for (const depRule of depRules) {
-        visit(depRule);
-      }
-    }
-
-    visiting.delete(key);
-    visited.add(key);
-
-    result.push(rule);
-  };
-
-  // 🔥 PRIORITY-AWARE ENTRY ORDER
-  const sortedInput = [...rules].sort((a, b) => {
-    const pA = a.priority ?? 999;
-    const pB = b.priority ?? 999;
-
-    if (pA !== pB) return pA - pB;
-
-    const kA = `${a.scope}:${a.target}:${a.id}`;
-    const kB = `${b.scope}:${b.target}:${b.id}`;
-
-    return kA.localeCompare(kB);
-  });
-
-  // 🚀 Execute ordering
-  for (const rule of sortedInput) {
-    visit(rule);
-  }
-
-  return result;
-}
-
-
-  
-  private  zzzbuildExecutionOrder(rules: any[]) {
-
-    console.log('buildExecutionOrder')
-
-    const result: any[] = [];
-
-    const visited = new Set<string>();
-    const visiting = new Set<string>();
-
-    // ---------------------------------------
-    // 🔑 Composite key helper (scope + target)
-    // ---------------------------------------
-    const getKey = (r: any) => `${r.scope}:${r.target}`;
-
-    // ---------------------------------------
-    // 🗺️ Build scope-aware maps
-    // ---------------------------------------
-    const rowTargetMap = new Map<string, any>();
-    const headerTargetMap = new Map<string, any>();
-
-    for (const r of rules) {
-      if (r.scope === 'row') {
-        rowTargetMap.set(r.target, r);
-      } else if (r.scope === 'header') {
-        headerTargetMap.set(r.target, r);
-      }
-    }
-
-    // ---------------------------------------
-    // 🔍 Dependency resolver (scope-aware)
-    // ---------------------------------------
-    const resolveDependency = (rule: any, dep: string) => {
-
-      if (rule.scope === 'row') {
-        // row can depend on row OR header
-        return rowTargetMap.get(dep) || headerTargetMap.get(dep);
-      }
-
-      if (rule.scope === 'header') {
-        // header should only depend on header
-        return headerTargetMap.get(dep);
-      }
-
-      return null;
-    };
-
-    // ---------------------------------------
-    // 🔄 DFS (topological sort)
-    // ---------------------------------------
-    const visit = (rule: any) => {
-
-      const key = getKey(rule);
-
-      if (visited.has(key)) return;
-
-      if (visiting.has(key)) {
-        throw new Error(`❌ Circular dependency detected at ${key}`);
-      }
-
-      visiting.add(key);
-
-      // visit dependencies first
-      for (const dep of rule.dependsOn ?? []) {
-
-        const depRule = resolveDependency(rule, dep);
-
-        if (depRule) {
-          visit(depRule);
-        }
-      }
-
-      visiting.delete(key);
-      visited.add(key);
-
-      result.push(rule);
-    };
-
-    // ---------------------------------------
-    // 🔥 PRIORITY-AWARE ENTRY ORDER
-    // ---------------------------------------
-    const sortedInput = [...rules].sort((a, b) => {
-
-      const pA = a.priority ?? 999;
-      const pB = b.priority ?? 999;
-
-      if (pA !== pB) return pA - pB;
-
-      // stable fallback
-      const kA = `${a.scope}:${a.target}:${a.id}`;
-      const kB = `${b.scope}:${b.target}:${b.id}`;
-
-      return kA.localeCompare(kB);
-    });
-
-    // ---------------------------------------
-    // 🚀 Execute ordering
-    // ---------------------------------------
-    for (const rule of sortedInput) {
-      visit(rule);
-    }
-
-    return result;
-  }
-
-
-
-  private zzzzbuildExecutionOrder(rules: any[]) {
-
-     console.log('buildExecutionOrder')
-    const map = new Map<string, any>();
-    rules.forEach(r => map.set(r.target, r));
-
-    const visited = new Set<string>();
-    const visiting = new Set<string>();
-    const result: any[] = [];
-
-    const visit = (rule: any) => {
-      if (visited.has(rule.target)) return;
-
-      if (visiting.has(rule.target)) {
-        throw new Error(`Circular dependency detected at '${rule.target}'`);
-      }
-
-      visiting.add(rule.target);
-
-      for (const dep of rule.dependsOn) {
-        if (map.has(dep)) {
-          visit(map.get(dep));
-        }
-      }
-
-      visiting.delete(rule.target);
-      visited.add(rule.target);
-      result.push(rule);
-    };
-
-    rules.forEach(visit);
-
-    return result;
-  }
-
+ 
   // =========================================================================
   // 🔧 Helpers
   // =========================================================================

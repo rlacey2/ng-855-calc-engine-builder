@@ -43,8 +43,7 @@ export class RuleEditorComponent {
     // need to save back and resort the rules for the table
     alert('fix me')
   }
-
-
+ 
   save() {
     this.engineAdapterService.updateRulesTable()
   }

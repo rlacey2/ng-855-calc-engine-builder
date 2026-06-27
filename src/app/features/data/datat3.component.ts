@@ -48,11 +48,11 @@ export class DataT3Component {
   cd = inject(ChangeDetectorRef)
 
   editorOptionsStatic: any;
- 
+
   constructor() {
     console.log('wire in data for specific event')
   }
- 
+
   ngOnInit() {
     /*
   const rawData = this.t3FormFG?.getRawValue();
@@ -74,38 +74,38 @@ export class DataT3Component {
       this.t3dataFG = this.engineAdapterService.get_t3dataFG()
       const rawData = this.t3FormFG?.getRawValue();
       this.t3data = JSON.stringify(rawData, null, 2);
-    
+
       // Data Inputs to Rules expects a string, but formatted as JSON
       this.t3dataFG.patchValue({ current: this.t3data }, { emitEvent: false })
 
-   //   this.engineAdapterService.setDiffOriginal(this.t3data )
+      //   this.engineAdapterService.setDiffOriginal(this.t3data )
 
       //   console.log(this.t3dataFG.getRawValue())
       this.cd.detectChanges();
     });
- 
+
   }
- 
+
   patch() {
     console.log('patch')
-    // the user has editted the input data and now wants to make the next version for the execution run.
+    // the user has editted the input data and now wants to make the next version for the execution run
+    let newCurrent = this.t3dataFG.get('current')?.getRawValue()
+    let newJSON = JSON.parse(newCurrent)
+    this.engineAdapterService.patch(newJSON)
+
+    return
+
+    .
+    /*
     let newCurrent = this.t3dataFG.get('current')?.getRawValue()
     let newJSON = JSON.parse(newCurrent)
 
-    this.t3FormFG =  this.engineAdapterService.generateForm(newJSON)
+    this.t3FormFG = this.engineAdapterService.generateForm(newJSON)
 
     let nv = this.t3FormFG?.getRawValue()
     console.log(nv)
-
-    // this.t3dataFG.patchValue({ current: newJSON }, { emitEvent: false })
-   //  this.t3FormFG?.reset(newJSON, { emitEvent: true })
-
-   // (this.t3FormFG?.get('details') as FormArray).clear() 
-/*
-   this.t3FormFG?.get('headers')?.setValue(newJSON.header)
-
-   this.t3FormFG?.get('details')?.setValue(newJSON.details)
 */
+
   }
 
 }

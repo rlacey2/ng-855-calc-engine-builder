@@ -4,6 +4,39 @@
       }
 
 
+/* Add a clear gap beneath every panel */
+.compact-accordion mat-expansion-panel {
+  margin-bottom: 4px !important;
+  box-shadow: none; /* Optional: cleans up the border look */
+  border: 1px solid #e0e0e0; /* Optional: defines the separate cards */
+}
+
+ 
+  /* target the headers to force minimum height */
+ .compact-accordion .mat-expansion-panel-header {
+  height: 22px !important; /* Forces the absolute minimum height */
+  padding: 0 6px;
+  background-color: rgb(95, 95, 87) !important;
+}
+
+  .compact-accordion .mat-expansion-panel-header {
+  background-color: rgb(151, 151, 124) !important;
+}
+/* aligns the title text and button nicely within the small height */
+::v-deep .compact-accordion .mat-content {
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* styles the placebo button to fit the ultra-thin header */
+.placebo-btn {
+  height: 16px;
+  line-height: 14px;
+  padding: 0 2px;
+  font-size: 12px;
+}
+ 
+
       .sectionHeader {
         background-color: yellow;
         color: blue;

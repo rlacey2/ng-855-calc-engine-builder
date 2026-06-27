@@ -1,37 +1,80 @@
-<div class="container-fluid d-flex flex-column vh-100">
 
-  <div class="d-flex justify-content-between p-2 border-bottom">
-    <h5>Calc Builder</h5>
 
-    <div class="d-flex gap-2">
+ 
+
+<mat-accordion class="compact-accordion"  multi="true">
+  <!-- Rule Builder -->
+  <mat-expansion-panel [expanded]="panelStates[0]">
+    <mat-expansion-panel-header>
+      <mat-panel-title>Rule Builder</mat-panel-title>
+      <button mat-button class="placebo-btn me-5" (click)="$event.stopPropagation()">Placebo</button>
+    </mat-expansion-panel-header>
+    
+  <div class="d-flex flex-column justify-content-between p-2 border-bottom">
+    
+    <div class="d-flex mx-auto gap-2">
       <button class="btn btn-outline-secondary btn-sm" (click)="export()">Export</button>
       <button class="btn btn-outline-secondary btn-sm" (click)="import()">Import</button>
     </div>
+
+       <rules-table [rules]="rules()" [selectedId]="selected()?.id" (select)="select($event)" (add)="add()">
+      </rules-table>  
+      
+      <rule-editor [rule]="selected()"></rule-editor>
+
   </div>
 
-  <div class="flex-grow-1 d-flex overflow-hidden">
 
-    <div class="col-5 border-end p-2">
-      <rules-table [rules]="rules()" [selectedId]="selected()?.id" (select)="select($event)" (add)="add()">
-      </rules-table>
+  </mat-expansion-panel>
+
+  <!-- Dependency Graph -->
+   <mat-expansion-panel [expanded]="panelStates[1]">
+    <mat-expansion-panel-header>
+      <mat-panel-title>Dependency Graph</mat-panel-title>
+      <button mat-button class="placebo-btn me-5" (click)="$event.stopPropagation()">Placebo</button>
+    </mat-expansion-panel-header>
+   
+      <dependency-graph [rulesByScope]="engineAdapterService.rulesByScope()"></dependency-graph>
+
+  </mat-expansion-panel>
+
+  <!-- Data Inputs to Rules -->
+   <mat-expansion-panel [expanded]="panelStates[2]">
+    <mat-expansion-panel-header>
+      <mat-panel-title>Data Inputs to Rules</mat-panel-title>
+      <button mat-button class="placebo-btn me-5" (click)="$event.stopPropagation()">Placebo</button>
+    </mat-expansion-panel-header>
 
       <data-t3 [t3FormFG]="t3FormFG" style="display: block; max-height: 600px; overflow-y: auto;"></data-t3>
 
+  </mat-expansion-panel>
+
+  <!-- Execution Trace-->
+   <mat-expansion-panel [expanded]="panelStates[3]">
+    <mat-expansion-panel-header>
+      <mat-panel-title>Execution Trace</mat-panel-title>
+      <button mat-button class="placebo-btn me-5" (click)="$event.stopPropagation()">Placebo</button>
+    </mat-expansion-panel-header>
+    <button class="btn btn-success btn-sm ms-5" (click)="run()">Run</button>
+   <trace-viewer [trace]="engineAdapterService.outputTrace()"></trace-viewer>
+  </mat-expansion-panel>
+
+  <!-- Difference -->
+   <mat-expansion-panel [expanded]="panelStates[4]">
+    <mat-expansion-panel-header>
+      <mat-panel-title>Difference</mat-panel-title>
+      <button mat-button class="placebo-btn me-5" (click)="$event.stopPropagation()">Placebo</button>
+    </mat-expansion-panel-header>
       @if(t3dataFG) {
       <monaco-diff-editor [originalModel]="originalModel()" [modifiedModel]="modifiedModel()"></monaco-diff-editor>
       }
-    </div>
+  </mat-expansion-panel>
+</mat-accordion>
 
-    <div class="col-7 d-flex flex-column p-2">
 
-      <rule-editor [rule]="selected()"></rule-editor>
 
-      <test-runner [rules]="rules()" [t3FormFG]="t3FormFG"
-        style="display: block; max-height: 1400px; overflow-y: auto;">
-      </test-runner>
+<div class="container-fluid d-flex flex-column vh-100">
 
-    </div>
 
-  </div>
 
 </div>

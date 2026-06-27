@@ -54,27 +54,7 @@ export class TestRunnerComponent {
   }
 
   run() {
-
     this.engineAdapterService.runExecution()
     this.engine = this.engineAdapterService.engine
-
-   // console.log(this.outputTrace())
-
-    return
-
-    console.log('expects form data')
-    // rebuild engine based on current rules
-    this.engine = new CalcEngine(this.rules, this.engineConfig) // prepare the engine's internals
-
-    this.t3FormFG = this.engineAdapterService.get_t3FormFG()
-
-    const res = this.engine.recalcAll(this.t3FormFG);
-
-    let trace = this.engine.getTrace()
-
-    this.outputTrace.set(trace);
-
-    console.log(this.outputTrace().length)
-
   }
 }

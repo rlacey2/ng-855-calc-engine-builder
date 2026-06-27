@@ -29,7 +29,9 @@ export class EngineAdapterService {
   public originalModel = signal<any>({});
   public modifiedModel = signal<any>({});
 
-  outputTrace = signal<any>(null);
+  public rulesByScope = signal<any[]>([]);
+
+  public outputTrace = signal<any>(null);
 
   t3FormFG: FormGroup = this.t3FormFGService.getT3FormFG();
 
@@ -68,7 +70,7 @@ export class EngineAdapterService {
 
     // this.rules.set(JSON.parse(rulesAsString));
     this.rules.set(sortedRules);
-
+    return sortedRules
   }
 
   sortRules(rules: Rule[]): Rule[] {
@@ -117,6 +119,10 @@ export class EngineAdapterService {
     return this.t3FormFG
   }
 
+  engineInitialise(rulesSorted: Rule[]) {
+    this.engine = new CalcEngine(rulesSorted ,this.engineConfig) 
+    this.rulesByScope.set(this.engine.get_rulesByScope())
+  }
 
   runExecution() {
     console.log('expects form data')
@@ -129,7 +135,7 @@ export class EngineAdapterService {
     const res = this.engine.recalcAll(this.t3FormFG);
 
     this.modifiedModel.set({...this.t3FormFG.getRawValue()})
-     console.log(this.t3FormFG.getRawValue().details[0].subTotal)
+    console.log(this.t3FormFG.getRawValue().details[0].subTotal)
 
  
     let trace = this.engine.getTrace()
@@ -137,6 +143,25 @@ export class EngineAdapterService {
     this.outputTrace.set(trace);
 
     console.log(this.outputTrace().length)
+  }
+
+
+  patch(newCurrent:any) {
+    // the input data values have changed and are to be patched into the t3Form so next run() will be applied to this data
+
+    
+    console.log('patch')
+    // the user has editted the input data and now wants to make the next version for the execution run.
+  // let newCurrent = this.t3dataFG.get('current')?.getRawValue()
+    let newJSON = JSON.parse(newCurrent)
+
+    this.t3FormFG =  this.generateForm(newJSON)
+
+    let nv = this.t3FormFG?.getRawValue()
+    console.log(nv)
+
+ 
+  }
   }
 
 }

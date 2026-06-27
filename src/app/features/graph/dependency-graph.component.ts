@@ -1,5 +1,5 @@
 // features/graph/dependency-graph.component.ts
-import { Component, Input, AfterViewInit, ElementRef } from '@angular/core';
+import { Component, Input, AfterViewInit, ElementRef, SimpleChanges, inject } from '@angular/core';
 //  Works perfectly with TypeScript
 import { Network } from 'vis-network';
 import { DataSet } from 'vis-data'; // If you need DataSet, it lives here now
@@ -14,23 +14,31 @@ export class DependencyGraphComponent  {
 
   @Input() rules: Rule[] = [];
   @Input() rulesByScope:  { header: [], row: [] }= {header: [], row: [] };
+  
+private el = inject(ElementRef)
+  constructor( ) { 
 
-  constructor(private el: ElementRef) { }
+  //  this.render()
+  }
 
   /*
   ngAfterViewInit() {
     this.render();
   } 
 */
-  ngOnChanges() {
-    this.render(); 
+  ngOnChanges(changes: SimpleChanges) {
+    //  this.render(); 
+    console.log('ngOnChanges')
+    if (changes['rulesByScope'] &&  changes['rulesByScope'].currentValue) {
+     this.render(); 
+    }
   }
 
   render() {
     console.log('render()')
    // if (!this.rules?.length) return;
 
-   if (!this.rulesByScope.header.length && !this.rulesByScope.row.length) return;
+   if (!this.rulesByScope?.header.length && !this.rulesByScope?.row.length) return;
 
 // 1. Initialize vis-data collections
 const nodes = new DataSet<any>();
