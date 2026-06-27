@@ -7,7 +7,7 @@ import { MonacoOptionsService } from './MonacoOptionsService';
 import { EngineAdapterService } from '../../shared/engineAdapterService';
 import { JsonPipe } from '@angular/common';
 
-//import { NgxMonacoEditorComponent } from 'ngx-monaco-editor';
+//import { NgxMonacoEditorWrapperComponent } from 'ngx-monaco-editor';
 
 @Component({
   selector: 'monaco-diff-editor',

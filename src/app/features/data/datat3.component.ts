@@ -9,7 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { EngineAdapterService } from '../../shared/engineAdapterService';
-import { MonacoWrapperComponent } from '../MonacoEditor/MonacoEditor.component';
+import { MonacoEditorWrapperComponent } from '../MonacoEditor/MonacoEditor.component';
 import { MonacoOptionsService } from '../MonacoEditor/MonacoOptionsService';
 
 @Component({
@@ -18,7 +18,7 @@ import { MonacoOptionsService } from '../MonacoEditor/MonacoOptionsService';
   templateUrl: './datat3.component.html',
   imports: [
     JsonPipe,
-    FormsModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MonacoWrapperComponent],
+    FormsModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MonacoEditorWrapperComponent],
 
 })
 

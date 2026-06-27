@@ -1,31 +1,28 @@
 import { Component, forwardRef,  SimpleChanges, Input, inject, ChangeDetectorRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
-import {   MonacoEditorModule } from 'ngx-monaco-editor-v2';
+import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { FormsModule } from '@angular/forms'; // <-- Import this
 import { MonacoOptionsService } from './MonacoOptionsService';
-
-//import { NgxMonacoEditorComponent } from 'ngx-monaco-editor';
-
+ 
 @Component({
   selector: 'monaco-editor-wrapper',
   standalone: true,
   templateUrl: './MonacoEditor.component.html',
   imports: [MonacoEditorModule, FormsModule],
-
-
+ 
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => MonacoWrapperComponent),
+      useExisting: forwardRef(() => MonacoEditorWrapperComponent),
       multi: true
     }
   ]
 
 })
 
-export class MonacoWrapperComponent implements ControlValueAccessor {
-  // @ViewChild(NgxMonacoEditorComponent) editorComponent!: NgxMonacoEditorComponent;
+export class MonacoEditorWrapperComponent implements ControlValueAccessor {
+  // @ViewChild(NgxMonacoEditorWrapperComponent) editorComponent!: NgxMonacoEditorWrapperComponent;
 
   @Input() language: string = 'json';
 

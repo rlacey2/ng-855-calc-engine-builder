@@ -15,6 +15,11 @@ import { MonacoDiffEditorComponent } from "./features/MonacoEditor/MonacoDiffEdi
 import { JsonPipe } from '@angular/common';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { TraceViewerComponent } from "./features/trace/trace-viewer.component";
+import { MonacoEditorWrapperComponent } from './features/MonacoEditor/MonacoEditor.component';
+import { MonacoOptionsService } from './features/MonacoEditor/MonacoOptionsService';
+import { MonacoEditorModule } from "ngx-monaco-editor-v2";
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
@@ -23,13 +28,17 @@ import { TraceViewerComponent } from "./features/trace/trace-viewer.component";
     JsonPipe,
     RulesTableComponent,
     RuleEditorComponent,
-    TestRunnerComponent,
     //  DependencyGraphComponent
     DataT3Component,
     MonacoDiffEditorComponent,
     MatExpansionModule,
     DependencyGraphComponent,
-    TraceViewerComponent
+    TraceViewerComponent,
+    MonacoEditorModule,
+    MatFormFieldModule,
+    MonacoEditorWrapperComponent,
+     FormsModule,  
+    
 ],
   templateUrl: './app.html'
 })
@@ -37,9 +46,12 @@ import { TraceViewerComponent } from "./features/trace/trace-viewer.component";
 export class AppComponent {
 
   engineAdapterService = inject(EngineAdapterService)
+  monacoOptionsService = inject(MonacoOptionsService)
 
   // rules = signal<any[]>([]);
   // selected = signal<any>(null);
+
+  editorOptionsStatic = this.monacoOptionsService.editorDefaultOptions
 
   rules = this.engineAdapterService.rules
   selected = this.engineAdapterService.selected
@@ -71,26 +83,16 @@ panelStates: boolean[] = [true, false, true, false, false];
      this.t3FormFG = this.engineAdapterService.get_t3FormFG()
      this.t3dataFG = this.engineAdapterService.get_t3dataFG()
 
-  // let x =  { "id": "h_total", "type": "aggregation", "scope": "header", "target": "total", "expression": "rows.reduce((s,r)=>s+r.subTotal,0)", "priority": 2 }
-    let y =  { "id": "h_total22", "type": "aggregation", "scope": "header", "target": "total", "expression": "rows.reduce((s,r)=>s+r.subTotal,0)", "priority": 2 }
-    
+ 
     let originalDataState = this.engineAdapterService.get_t3dataFG()
 
   //  originalModel: DiffEditorModel =   this.jsonDiff ({ "id": "h_total", "type": "aggregation", "scope": "header", "target": "total", "expression": "rows.reduce((s,r)=>s+r.subTotal,0)", "priority": 2 })
    
  //modifiedModel: DiffEditorModel =   this.jsonDiff ({ "id": "h_total", "type": "aggregation", "scope": "header", "target": "total", "expression": "rows.reduce((s,r)=>s+r.subTotal,0)", "priority": 2 })
-
- console.log('ffffffffffffffffffffffff')
-
-//JSON.parse(this.t3dataFG.getRawValue().current)
-   // this.engineAdapterService.setDiffOriginal( originalDataState.getRawValue().current )
-   // this.engineAdapterService.setDiffModified(y)
-
+ 
    this.originalModel = this.engineAdapterService.originalModel  // no () on the signal yet
    this.modifiedModel = this.engineAdapterService.modifiedModel  // no () on the signal yet
-
-  //  console.log(this.originalModel())
-
+ 
   }
 
 
