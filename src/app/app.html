@@ -1,89 +1,82 @@
-
-
- 
-
-<mat-accordion class="compact-accordion"  multi="true">
+<mat-accordion class="compact-accordion" multi="true">
   <!-- Rule Builder -->
   <mat-expansion-panel [expanded]="panelStates[0]" class="sticky-panel">
     <mat-expansion-panel-header>
       <mat-panel-title>Rule Builder</mat-panel-title>
-      <button mat-button class="placebo-btn abs-w-10 me-5" (click)="$event.stopPropagation()">Placebo</button>
+
     </mat-expansion-panel-header>
-    
-  <div class="d-flex flex-column justify-content-between p-2 border-bottom">
-    
-    <div class="d-flex mx-auto gap-2">
-      <button class="btn btn-outline-secondary btn-sm" (click)="export()">Export</button>
-      <button class="btn btn-outline-secondary btn-sm" (click)="import()">Import</button>
+
+
+    <div class="container-fluid d-flex flex-row zzzvh-100">
+
+      <div class="col-6">
+        <div class="d-flex flex-column justify-content-between p-2 border-bottom">
+
+          <div class="d-flex mx-auto gap-2">
+            <button class="btn btn-outline-secondary btn-sm" (click)="export()">Export</button>
+            <button class="btn btn-outline-secondary btn-sm" (click)="import()">Import</button>
+          </div>
+
+          <rules-table [rules]="rules()" [selectedId]="selected()?.id" (select)="select($event)" (add)="add()">
+          </rules-table>
+
+ 
+          <rule-editor [rule]="selected()"></rule-editor>
+
+        </div>
+      </div>
+
+      <div class="col-6 mt-2">
+        <!-- the state of the editor is in the string rulesMonaco-->
+        <ngx-monaco-editor class="h-100"   [options]="editorDefaultOptions" [(ngModel)]="rulesMonaco"></ngx-monaco-editor>
+
+      </div>
+
     </div>
-
-       <rules-table [rules]="rules()" [selectedId]="selected()?.id" (select)="select($event)" (add)="add()">
-      </rules-table>  
-      
-      <rule-editor [rule]="selected()"></rule-editor>
-
-
-      <hr>
-      Monaco
-
-<ngx-monaco-editor [options]="editorOptions" [(ngModel)]="rulesMonaco"></ngx-monaco-editor>
-
-   
-
-
-  </div>
-  
-
 
   </mat-expansion-panel>
 
   <!-- Dependency Graph -->
-   <mat-expansion-panel [expanded]="panelStates[1]">
+  <mat-expansion-panel [expanded]="panelStates[1]">
     <mat-expansion-panel-header>
       <mat-panel-title>Dependency Graph</mat-panel-title>
 
     </mat-expansion-panel-header>
-   
-      <dependency-graph [rulesByScope]="engineAdapterService.rulesByScope()"></dependency-graph>
+
+    <dependency-graph [rulesByScope]="engineAdapterService.rulesByScope()"></dependency-graph>
 
   </mat-expansion-panel>
 
   <!-- Data Inputs to Rules -->
-   <mat-expansion-panel [expanded]="panelStates[2]" >
+  <mat-expansion-panel [expanded]="panelStates[2]">
     <mat-expansion-panel-header>
       <mat-panel-title>Data Inputs to Rules</mat-panel-title>
       <button mat-button class="btn btn-sm btn-primary rounded-4 abs-w-70 me-5" (click)="patch($event)">Patch</button>
     </mat-expansion-panel-header>
 
-      <data-t3 [t3FormFG]="t3FormFG" style="display: block; max-height: 600px; overflow-y: auto;"></data-t3>
+    <data-t3 [t3FormFG]="t3FormFG" style="display: block; max-height: 600px; overflow-y: auto;"></data-t3>
 
   </mat-expansion-panel>
 
   <!-- Execution Trace-->
-   <mat-expansion-panel [expanded]="panelStates[3]">
+  <mat-expansion-panel [expanded]="panelStates[3]">
     <mat-expansion-panel-header>
       <mat-panel-title>Execution Trace</mat-panel-title>
-      <button mat-button class="btn btn-sm btn-primary rounded-4 abs-w-70 me-5" (click)="calculate($event)">Calculate</button>
+      <button mat-button class="btn btn-sm btn-primary rounded-4 abs-w-70 me-5"
+        (click)="calculate($event)">Calculate</button>
     </mat-expansion-panel-header>
- 
-   <trace-viewer [trace]="engineAdapterService.outputTrace()"></trace-viewer>
+
+    <trace-viewer [trace]="engineAdapterService.outputTrace()"></trace-viewer>
   </mat-expansion-panel>
 
   <!-- Difference -->
-   <mat-expansion-panel [expanded]="panelStates[4]">
+  <mat-expansion-panel [expanded]="panelStates[4]">
     <mat-expansion-panel-header>
       <mat-panel-title>Difference</mat-panel-title>
-   
+
     </mat-expansion-panel-header>
-      @if(t3dataFG) {
-      <monaco-diff-editor [originalModel]="originalModel()" [modifiedModel]="modifiedModel()"></monaco-diff-editor>
-      }
+    @if(t3dataFG) {
+    <monaco-diff-editor [originalModel]="originalModel()" [modifiedModel]="modifiedModel()"></monaco-diff-editor>
+    }
   </mat-expansion-panel>
 </mat-accordion>
-
-
-
-<div class="container-fluid d-flex flex-column vh-100">
-
- 
-</div>

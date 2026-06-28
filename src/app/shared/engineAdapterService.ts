@@ -59,10 +59,7 @@ export class EngineAdapterService {
 
   setRulesAgenda(rulesToUse: Rule[]) {
     // sorted list of rules
-
-
     //  const rulesAsString = JSON.stringify(rulesToUse )
-
     // the rules are separate form the engine that will consume them
     // i.e. the DSL is used to create the execution of rules that meet the syntax
 
@@ -137,14 +134,12 @@ export class EngineAdapterService {
     this.modifiedModel.set({...this.t3FormFG.getRawValue()})
     console.log(this.t3FormFG.getRawValue().details[0].subTotal)
 
- 
     let trace = this.engine.getTrace()
 
     this.outputTrace.set(trace);
 
     console.log(this.outputTrace().length)
   }
-
 
   patch() {
      console.log('patch')
@@ -153,20 +148,15 @@ export class EngineAdapterService {
     let newCurrent = this.get_t3dataFG().get('current')?.getRawValue()
     let newJSON = JSON.parse(newCurrent)
     this.t3FormFG =  this.generateForm(newJSON)
-
-    /*
-   
- 
-  // let newCurrent = this.t3dataFG.get('current')?.getRawValue()
- //   let newJSON = JSON.parse(newCurrent)
-
-    this.t3FormFG =  this.generateForm(newJSON)
-
-    let nv = this.t3FormFG?.getRawValue()
-    console.log(nv)
-*/
- 
-  }
   }
 
+ add() {
  
+    this.rules.update( (r:any) => [...r, {
+      id: crypto.randomUUID().split("-")[0], /* highly likely unique */
+      target: '',
+      expression: ''
+    }]);
+  }
+
+  }

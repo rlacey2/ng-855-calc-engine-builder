@@ -123,8 +123,6 @@ if (this.rulesByScope?.header) {
 
 
 
-
-
     /* 
      //dependencies are naive:
      const extractDeps = (expr: any) =>
@@ -138,7 +136,6 @@ if (this.rulesByScope?.header) {
       //    nodes.add({ id: rule.target, label: rule.target });
       // This safely adds or updates the item dynamically
       nodes.update({ id: rule.target, label: rule.target });
-
 
       // const deps = extractDeps(rule.expression);
       const deps = extractDeps(rule); // real parser / engine metadata:

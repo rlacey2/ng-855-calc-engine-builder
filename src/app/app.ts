@@ -36,7 +36,7 @@ import { FormsModule } from '@angular/forms';
     TraceViewerComponent,
     MonacoEditorModule,
     MatFormFieldModule,
-    MonacoEditorWrapperComponent,
+    
      FormsModule,  
     
 ],
@@ -51,7 +51,7 @@ export class AppComponent {
   // rules = signal<any[]>([]);
   // selected = signal<any>(null);
 
-  editorOptionsStatic = this.monacoOptionsService.editorDefaultOptions
+  editorDefaultOptions = this.monacoOptionsService.editorDefaultOptions
 
   rules:any = this.engineAdapterService.rules // this is a signal reference
   selected = this.engineAdapterService.selected
@@ -66,28 +66,11 @@ export class AppComponent {
 panelStates: boolean[] = [true, false, true, false, false];
 
 
- editorOptions = {theme: 'vs-dark', language: 'json'};
-  rulesMonaco: string = '{"id": 1}';
 
+  rulesMonaco: string = '{}';
 
-
-// 2. Computed signal (automatically derives and tracks changes)
-  temp1 = computed(() => {
-    console.log('ffffffffffffffffffffffff')
-    this.rulesMonaco = this.engineAdapterService.rules().toString();
-   
-  });
-
-
-
-
-
-/*
-rulesMonaco = computed(() => {
-  console.log('ffffffffffffffffffffffff'); // Will print ONLY when read
-  return this.engineAdapterService.rules().toString();
-});
-*/
+ 
+ 
   constructor() {
 
     console.log('constructor')
@@ -100,11 +83,7 @@ rulesMonaco = computed(() => {
       this.rulesMonaco = JSON.stringify(currentJsonObject, null, 2); 
     });
 
-
-
-
-
-
+ 
     const rulesToUse = ruleSet.sequentialSteps2
     let sortedRules = this.engineAdapterService.setRulesAgenda(rulesToUse)
 
@@ -129,21 +108,12 @@ rulesMonaco = computed(() => {
  
    this.originalModel = this.engineAdapterService.originalModel  // no () on the signal yet
    this.modifiedModel = this.engineAdapterService.modifiedModel  // no () on the signal yet
-
-   setTimeout( () => {
-     this.rulesMonaco = '{"idssssss": 1}';
-     
-   }, 4000)
- 
   }
 
 
   add() {
-    this.rules.update( (r:any) => [...r, {
-      id: crypto.randomUUID().split("-")[0],
-      target: '',
-      expression: ''
-    }]);
+this.engineAdapterService.add()
+ 
   }
 
   select(r: any) {

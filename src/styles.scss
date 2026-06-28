@@ -31,12 +31,10 @@ ngx-monaco-editor {
  .compact-accordion .mat-expansion-panel-header {
   height: 22px !important; /* Forces the absolute minimum height */
   padding: 0 6px;
-  background-color: rgb(95, 95, 87) !important;
+  background-color: rgb(227, 227, 226) !important;
 }
 
-  .compact-accordion .mat-expansion-panel-header {
-  background-color: rgb(151, 151, 124) !important;
-}
+ 
 /* aligns the title text and button nicely within the small height */
 ::v-deep .compact-accordion .mat-content {
   align-items: center;

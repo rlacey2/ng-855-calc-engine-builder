@@ -27,7 +27,8 @@ export class MonacoOptionsService {
     formatOnPaste: true,
     formatOnType: true,
     wordWrap: "on",
-    codeLens: false
+    codeLens: false,
+     automaticLayout: true
   }
  
   public editorOptions = {

@@ -47,7 +47,7 @@ export class DataT3Component {
 
   cd = inject(ChangeDetectorRef)
 
-  editorOptionsStatic: any;
+  editorDefaultOptions: any;
 
   constructor() {
     console.log('wire in data for specific event')
@@ -64,7 +64,7 @@ export class DataT3Component {
 */
 
     // make this static
-    this.editorOptionsStatic = this.monacoOptionsService.editorDefaultOptions
+    this.editorDefaultOptions = this.monacoOptionsService.editorDefaultOptions
   }
 
   ngAfterViewInit(): void {
