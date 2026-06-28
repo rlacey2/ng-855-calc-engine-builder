@@ -1,13 +1,17 @@
-import { inject, Injectable, signal } from "@angular/core";
+import { effect, inject, Injectable, signal } from "@angular/core";
 import { Rule } from "../core/engine/types";
 import { t3FormFGService } from "./t3FormFGService";
-import { FormGroup } from "@angular/forms";
+import { FormControl, FormGroup } from "@angular/forms";
 
 import { CalcEngineConfig } from '../core/engine/types';
 import { CalcEngine } from '../core/engine/calc-engine';
+import { scenarioSet } from '../core/engine/scenarios'
+
+
 
 // acts a bridge/router/exchange between the components in the engine builder
 // wiring them altogether, a clearing house for the various state(s) needed
+
 
 @Injectable({ providedIn: 'root' })
 export class EngineAdapterService {
@@ -26,23 +30,41 @@ export class EngineAdapterService {
   public rules = signal<any[]>([]);     // rules to populate the table of rules
   public selected = signal<any>(null);  // selected row in the table of rules
 
+  public dataInputs = signal<any>({});
+
   public originalModel = signal<any>({});
   public modifiedModel = signal<any>({});
 
-  public rulesByScope = signal<any[]>([]);
+  public rulesByScope = signal<any>({});
 
   public outputTrace = signal<any>(null);
 
+  // Explicitly types the signal as a key-value dictionary mapping strings to any object
+  public scenarios = signal<Record<string, any>>(scenarioSet);
+  // public scenarios = signal<ScenarioState>({ rules: [], data: {}});  
+
   t3FormFG: FormGroup = this.t3FormFGService.getT3FormFG();
 
-  //t3dataFG: FormGroup
+  // 1. Initialize the form group to satisfy the TypeScript compiler
+  t3dataFG = new FormGroup({
+    current: new FormControl('')
+  });
 
-  /*
-  originalModel: DiffEditorModel = this.jsonDiff({ "id": "h_total", "type": "aggregation", "scope": "header", "target": "total", "expression": "rows.reduce((s,r)=>s+r.subTotal,0)", "priority": 2 })
 
-  modifiedModel: DiffEditorModel = this.jsonDiff({ "id": "h_total", "type": "aggregation", "scope": "header", "target": "total", "expression": "rows.reduce((s,r)=>s+r.subTotal,0)", "priority": 2 })
 
-  */
+  constructor() {
+    effect(() => {
+      console.log('effect()2->dataInputs()')
+      const x = this.dataInputs()
+      if (x.details) {
+        console.log('mmmmmmmmmmmm')
+        //   this.t3FormFG = this.engineAdapterService.get_t3FormFG()
+        //   this.t3dataFG = this.engineAdapterService.get_t3dataFG()
+      }
+    });
+  }
+
+
 
   setDiffOriginal(x: any) {
     console.log('setDiffOriginal')
@@ -83,23 +105,6 @@ export class EngineAdapterService {
     });
 
     return sortedInput
-
-
-    /*
-      return [...rules].sort((a, b) => {
-        // 1. Sort by target alphabetically
-        const targetComparison = a.target.localeCompare(b.target);
-        
-        // 2. If targets are different, return the comparison result
-        if (targetComparison !== 0) {
-          return targetComparison;
-        }
-        
-        // 3. If targets are identical, sort by priority ascending
-        return a.priority - b.priority;
-      });
-    */
-
   }
 
   get_t3FormFG() {
@@ -107,17 +112,18 @@ export class EngineAdapterService {
     return this.t3FormFG
   }
 
-  get_t3dataFG() {
-    return this.t3FormFGService.get_t3dataFG()
+  get_t3dataFG() { // single control, to allow cheap testing 
+    return this.t3dataFG
   }
 
-  generateForm(newJSON: any) {
+  generatet3FormFG(newJSON: any) {
+    // the form is needed to supply its getRawValue() as the current data inputs to the engine
     this.t3FormFG = this.t3FormFGService.generateForm(newJSON)
     return this.t3FormFG
   }
 
   engineInitialise(rulesSorted: Rule[]) {
-    this.engine = new CalcEngine(rulesSorted ,this.engineConfig) 
+    this.engine = new CalcEngine(rulesSorted, this.engineConfig)
     this.rulesByScope.set(this.engine.get_rulesByScope())
   }
 
@@ -126,12 +132,12 @@ export class EngineAdapterService {
     // rebuild engine based on current rules
     this.engine = new CalcEngine(this.rules(), this.engineConfig) // prepare the engine's internals
 
-    this.originalModel.set({...this.t3FormFG.getRawValue()})
+    this.originalModel.set({ ...this.t3FormFG.getRawValue() })
     console.log(this.t3FormFG.getRawValue().details[0].subTotal)
 
     const res = this.engine.recalcAll(this.t3FormFG);
 
-    this.modifiedModel.set({...this.t3FormFG.getRawValue()})
+    this.modifiedModel.set({ ...this.t3FormFG.getRawValue() })
     console.log(this.t3FormFG.getRawValue().details[0].subTotal)
 
     let trace = this.engine.getTrace()
@@ -142,21 +148,52 @@ export class EngineAdapterService {
   }
 
   patch() {
-     console.log('patch')
+    console.log('patch')
     // the input data values have changed and are to be patched into the t3Form so next run() will be applied to this data
     // the user has editted the input data and now wants to make the next version for the execution run
     let newCurrent = this.get_t3dataFG().get('current')?.getRawValue()
     let newJSON = JSON.parse(newCurrent)
-    this.t3FormFG =  this.generateForm(newJSON)
+    this.t3FormFG = this.generatet3FormFG(newJSON)
   }
 
- add() {
- 
-    this.rules.update( (r:any) => [...r, {
+  add() {
+
+    this.rules.update((r: any) => [...r, {
       id: crypto.randomUUID().split("-")[0], /* highly likely unique */
-      target: '',
-      expression: ''
+      target: 'Z',
+      expression: '1*1',
+      priority: 999
     }]);
   }
 
+  onScenarioChange(scenario: string) {
+    console.log('onScenarioChange')
+
+    this.clearPreviousScenario()
+
+    const nextScenario = this.scenarios()[scenario]
+
+    const rules = nextScenario.rules
+    const data = nextScenario.data
+
+    let sortedRules = this.setRulesAgenda(rules)
+
+    this.setRulesAgenda(sortedRules)
+
+    this.t3FormFG = this.generatet3FormFG(data)
+
+    this.dataInputs.set(data)
+
+    this.engineInitialise(sortedRules)
+
   }
+
+  clearPreviousScenario() {
+
+    this.selected.set(null)
+    this.generatet3FormFG({ header: {}, details: [] })
+    this.rulesByScope.set({ header:[], details:[]})
+
+  }
+
+}

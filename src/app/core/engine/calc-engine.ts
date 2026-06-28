@@ -162,7 +162,6 @@ export class CalcEngine {
  
   }
 
-
   createEngine(rules: Rule[], engineConfig: CalcEngineConfig = {}) {
        console.log("ensure disabled/hidden fields are available to the logic")
 
@@ -193,7 +192,6 @@ export class CalcEngine {
     };
   }
 
- 
  get_rulesByScope() {
   return this.rulesByScope
  }
@@ -326,6 +324,22 @@ private buildExecutionOrder(rules: any[]) {
   // 🔧 Helpers
   // =========================================================================
 
+
+private flattenExtras(extras: any[]): Record<string, any> {
+  // to catch the adhoc fields by flattening them into the parent for calculations
+  const out: any = {};
+
+  if (!extras) return out;
+
+  for (const obj of extras) {
+    const key = Object.keys(obj)[0];
+    out[key] = obj[key];
+  }
+
+  return out;
+}
+
+ 
   private createProxyContext(primary: any, secondary?: any, extra?: any) {
     return new Proxy({}, {
       get: (_, prop: string) => {
@@ -336,6 +350,33 @@ private buildExecutionOrder(rules: any[]) {
       }
     });
   }
+ 
+
+// row field → extras → header → undefined
+createProxyContext2(row: any, header: any, extra?: any) {
+  return new Proxy({}, {
+    get: (_, prop: string) => {
+
+      // 1. Row direct fields
+      if (prop in row) return row[prop];
+
+      // 2. Extras (flattened)
+      if (row._extras && prop in row._extras) {
+        return row._extras[prop];
+      }
+
+      // 3. Header fallback
+      if (prop in header) return header[prop];
+
+      return undefined;
+    },
+
+    set: (_, prop: string, value) => {
+      row[prop] = value;
+      return true;
+    }
+  });
+}
 
   private shouldRunRule(rule: any, ctx: any): boolean {
     // console.log('shouldRunRule')
@@ -473,7 +514,20 @@ private buildExecutionOrder(rules: any[]) {
     // Use getRawValue() so disabled/read-only controls are included
     const rawFormValues = form.getRawValue();
     const header = { ...rawFormValues.header };
-    const rows = rawFormValues.details.map((row: any) => ({ ...row }));
+  //  const rows = rawFormValues.details.map((row: any) => ({ ...row }));
+
+
+      // handles the extras by promoting to detail item level from nested array as a map
+      const rows = rawFormValues.details.map((row: any) => {
+        const extrasMap = this.flattenExtras(row.extras);
+
+        return {
+          ...row,
+          _extras: extrasMap // safe namespace
+        };
+      });
+
+
 
     let dataN = 0
     for (const row of rows) { // these are the input data rows
@@ -532,8 +586,6 @@ private buildExecutionOrder(rules: any[]) {
     // the header
     form.get('header').patchValue(header, { emitEvent: false });
   }
-
-
 
   // =========================================================================
   // 🔹 SINGLE ROW / HEADER EVALUATE

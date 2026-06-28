@@ -4,11 +4,7 @@ import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 @Injectable({ providedIn: 'root' })
 export class t3FormFGService {
 
-
-
-
-
-
+ 
   fb: FormBuilder = new FormBuilder();
 
   // this is the form that the public would enter data into
@@ -17,26 +13,13 @@ export class t3FormFGService {
 
 
 
-  // 1. Initialize the form group to satisfy the TypeScript compiler
-  t3dataFG = new FormGroup({
-    current: new FormControl('')
-  });
-
-
-
 
   getT3FormFG() {
     return this.form; // lots of controls i.e. replicating pattern of live inputs to public
   }
 
-  get_t3dataFG() { // single control, to allow cheap testing 
-    return this.t3dataFG
-  }
-
-
 
   generateForm(data: any) {
-
 
     let form = this.fb.group({
 

@@ -1,17 +1,24 @@
 @if(t3dataFG) {
 
-<div class="d-flex flex-column">
+<div class="d-flex flex-column  ">
  
   <div>
 
     @if(t3dataFG) {
+ @if(0) {
+     <ngx-monaco-editor style="height:300px"  [options]="editorDefaultOptions" [(ngModel)]="t3data2"></ngx-monaco-editor>
+ }
+ 
+    @if(1) {
 
     <form [formGroup]="t3dataFG">
 
       <monaco-editor-wrapper formControlName="current" [options]="editorDefaultOptions" [language]="'json'"></monaco-editor-wrapper>
+ 
 
     </form>
-
+  }
+ 
     }
  
   </div>

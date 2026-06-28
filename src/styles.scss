@@ -1,3 +1,12 @@
+html {
+    overflow-y: scroll; 
+}
+
+
+.scroll-y {
+  overflow-y: scroll;
+}
+
 .abs-w-70 {
   min-width: 70px;
   max-width: 70px;
@@ -21,7 +30,7 @@ ngx-monaco-editor {
 
 /* Add a clear gap beneath every panel */
 .compact-accordion mat-expansion-panel {
-  margin-bottom: 2px !important;
+  margin-bottom: 1px !important;
   box-shadow: none; /* Optional: cleans up the border look */
   border: 1px solid #e0e0e0; /* Optional: defines the separate cards */
 }
@@ -30,7 +39,7 @@ ngx-monaco-editor {
   /* target the headers to force minimum height */
  .compact-accordion .mat-expansion-panel-header {
   height: 22px !important; /* Forces the absolute minimum height */
-  padding: 0 6px;
+  padding: 0 1px;
   background-color: rgb(227, 227, 226) !important;
 }
 

@@ -1,6 +1,44 @@
-<mat-accordion class="compact-accordion" multi="true">
+
+<div class=" ">
+  <div class = "d-flex flex-row">
+
+<label for="scenarios">Scenario:</label>
+<select id="scenarios" [(ngModel)]="options.scenario" (change)="onScenarioChange()">
+  <option value="" disabled selected>Choose a Scenario</option>
+  @for (key of scenarioKeys; track key) {
+    <option [value]="key">{{ key }}</option>
+  }
+</select>
+
+ 
+<!-- 
+
+ 
+<label for="scenario-select">Scenario:</label>
+
+<select name="rules" id="scenario-select" [(ngModel)]="options.scenario" (change)="onScenarioChange()">
+  <option value="">--Choose a Scenario--</option>
+<option value="scenario_01">Scenario 01</option>
+
+  
+  <option value="mad1">mad1</option>
+  <option value="sequentialSteps1">sequentialSteps1</option>
+  <option value="sequentialSteps2">sequentialSteps2</option>
+  <option value="sequentialSteps3">sequentialSteps3</option>
+  <option value="sequentialSteps4">sequentialSteps4</option>
+</select>
+-->
+
+ 
+     <button class="btn btn-outline-secondary btn-sm" (click)="panelStates=[]">Close All</button>
+     {{panelStates | json}}
+
+  </div>
+ 
+
+<mat-accordion class="compact-accordion " multi="true">
   <!-- Rule Builder -->
-  <mat-expansion-panel [expanded]="panelStates[0]" class="sticky-panel">
+  <mat-expansion-panel [(expanded)]="panelStates[0]" class="sticky-panel">
     <mat-expansion-panel-header>
       <mat-panel-title>Rule Builder</mat-panel-title>
 
@@ -37,7 +75,7 @@
   </mat-expansion-panel>
 
   <!-- Dependency Graph -->
-  <mat-expansion-panel [expanded]="panelStates[1]">
+  <mat-expansion-panel [(expanded)]="panelStates[1]">
     <mat-expansion-panel-header>
       <mat-panel-title>Dependency Graph</mat-panel-title>
 
@@ -48,7 +86,7 @@
   </mat-expansion-panel>
 
   <!-- Data Inputs to Rules -->
-  <mat-expansion-panel [expanded]="panelStates[2]">
+  <mat-expansion-panel [(expanded)]="panelStates[2]">
     <mat-expansion-panel-header>
       <mat-panel-title>Data Inputs to Rules</mat-panel-title>
       <button mat-button class="btn btn-sm btn-primary rounded-4 abs-w-70 me-5" (click)="patch($event)">Patch</button>
@@ -58,8 +96,8 @@
 
   </mat-expansion-panel>
 
-  <!-- Execution Trace-->
-  <mat-expansion-panel [expanded]="panelStates[3]">
+  <!-- Execution Trace / Calculate-->
+  <mat-expansion-panel [(expanded)]="panelStates[3]">
     <mat-expansion-panel-header>
       <mat-panel-title>Execution Trace</mat-panel-title>
       <button mat-button class="btn btn-sm btn-primary rounded-4 abs-w-70 me-5"
@@ -70,7 +108,7 @@
   </mat-expansion-panel>
 
   <!-- Difference -->
-  <mat-expansion-panel [expanded]="panelStates[4]">
+  <mat-expansion-panel [(expanded)]="panelStates[4]">
     <mat-expansion-panel-header>
       <mat-panel-title>Difference</mat-panel-title>
 
@@ -80,3 +118,5 @@
     }
   </mat-expansion-panel>
 </mat-accordion>
+
+</div>

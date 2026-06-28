@@ -10,15 +10,15 @@ import { Rule } from '../../core/engine/types';
   standalone: true,
   templateUrl: './dependency-graph.component.html'
 })
-export class DependencyGraphComponent  {
+export class DependencyGraphComponent {
 
   @Input() rules: Rule[] = [];
-  @Input() rulesByScope:  { header: [], row: [] }= {header: [], row: [] };
-  
-private el = inject(ElementRef)
-  constructor( ) { 
+  @Input() rulesByScope: { header: [], row: [] } = { header: [], row: [] };
 
-  //  this.render()
+  private el = inject(ElementRef)
+  constructor() {
+
+    //  this.render()
   }
 
   /*
@@ -29,97 +29,102 @@ private el = inject(ElementRef)
   ngOnChanges(changes: SimpleChanges) {
     //  this.render(); 
     console.log('ngOnChanges')
-    if (changes['rulesByScope'] &&  changes['rulesByScope'].currentValue) {
-     this.render(); 
+    if (changes['rulesByScope'] && changes['rulesByScope'].currentValue) {
+      this.render();
     }
   }
 
   render() {
     console.log('render()')
-   // if (!this.rules?.length) return;
+    // if (!this.rules?.length) return;
 
-   if (!this.rulesByScope?.header.length && !this.rulesByScope?.row.length) return;
+        // 1. Initialize vis-data collections
+    const nodes = new DataSet<any>();
+    const edges = new DataSet<any>();
+    const container = this.el.nativeElement.firstChild;
 
-// 1. Initialize vis-data collections
-const nodes = new DataSet<any>();
-const edges = new DataSet<any>();
+    if (!this.rulesByScope?.header.length && !this.rulesByScope?.row.length) {
+       // clear any previous graph and return
+       new Network(container, { nodes, edges }, {});
+      return
+    }
+ 
+    // State map to track the absolute last Rule ID that touched a variable name
+    const lastUpdatedBy: Record<string, string> = {};
 
-// State map to track the absolute last Rule ID that touched a variable name
-const lastUpdatedBy: Record<string, string> = {};
+    // 2. Helper function to process a ordered block of rules
+    const processExecutionChain = (rulesList: any[], scopeName: string) => {
+      rulesList.forEach((rule) => {
+        // A. Generate unique node for this specific rule execution
+        nodes.update({
+          id: rule.id,
+          label: `[${scopeName.toUpperCase()}]\n${rule.id}\nTarget: ${rule.target}`,
+          shape: scopeName === 'header' ? 'ellipse' : 'box',
+          color: scopeName === 'header'
+            ? { background: '#e7ee23', border: '#b6a23c' }  // header
+            : { background: '#e2f0cb', border: '#b5e2fa' }, // details row
+          margin: 10
+        });
 
-// 2. Helper function to process a ordered block of rules
-const processExecutionChain = (rulesList: any[], scopeName: string) => {
-  rulesList.forEach((rule) => {
-    // A. Generate unique node for this specific rule execution
-    nodes.update({
-      id: rule.id,
-      label: `[${scopeName.toUpperCase()}]\n${rule.id}\nTarget: ${rule.target}`,
-      shape: scopeName === 'header' ? 'ellipse' : 'box',
-      color: scopeName === 'header' 
-        ? { background: '#e7ee23', border: '#b6a23c' }  // header
-        : { background: '#e2f0cb', border: '#b5e2fa' }, // details row
-      margin: 10
-    });
+        // B. Detect dependent variables inside this rule
+        // (Adjust this list or regex parser based on your compilation tokens)
+        const possibleVars = ['qty', 'price', 'subTotal', 'rows'];
 
-    // B. Detect dependent variables inside this rule
-    // (Adjust this list or regex parser based on your compilation tokens)
-    const possibleVars = ['qty', 'price', 'subTotal', 'rows'];
+        possibleVars.forEach((variable) => {
+          const parsedInExpression = rule.expression.includes(variable);
+          const parsedInCondition = rule.when && rule.when.includes(variable);
 
-    possibleVars.forEach((variable) => {
-      const parsedInExpression = rule.expression.includes(variable);
-      const parsedInCondition = rule.when && rule.when.includes(variable);
+          if (parsedInExpression || parsedInCondition) {
+            // Special Case: Header rule aggregation reads "rows.reduce((..., r => r.subTotal))"
+            // It depends on the absolute final row calculation step of subTotal
+            if (variable === 'rows' && lastUpdatedBy['subTotal']) {
+              edges.update({
+                from: lastUpdatedBy['subTotal'], // Points to d_5 (the last row step)
+                to: rule.id,
+                label: 'row data stream',
+                arrows: 'to',
+                style: 'dash' // Visual cue that it's an aggregation jump
+              });
+            }
+            // Standard Case: Variable has a history in the execution timeline
+            else if (lastUpdatedBy[variable]) {
+              edges.update({
+                from: lastUpdatedBy[variable], // Connects d_2 directly back to d_1
+                to: rule.id,
+                label: variable,
+                arrows: 'to'
+              });
+            }
+            // Root Input Case: Read from raw input fields (e.g., base qty or price)
+            else {
+              const inputNodeId = `input_${variable}`;
+              nodes.update({
+                id: inputNodeId,
+                label: `Input:\n${variable}`,
+                shape: 'database',
+                color: '#e5e5e5'
+              });
+              edges.update({
+                from: inputNodeId,
+                to: rule.id,
+                arrows: 'to'
+              });
+            }
+          }
+        });
 
-      if (parsedInExpression || parsedInCondition) {
-        // Special Case: Header rule aggregation reads "rows.reduce((..., r => r.subTotal))"
-        // It depends on the absolute final row calculation step of subTotal
-        if (variable === 'rows' && lastUpdatedBy['subTotal']) {
-          edges.update({
-            from: lastUpdatedBy['subTotal'], // Points to d_5 (the last row step)
-            to: rule.id,
-            label: 'row data stream',
-            arrows: 'to',
-            style: 'dash' // Visual cue that it's an aggregation jump
-          });
-        }
-        // Standard Case: Variable has a history in the execution timeline
-        else if (lastUpdatedBy[variable]) {
-          edges.update({
-            from: lastUpdatedBy[variable], // Connects d_2 directly back to d_1
-            to: rule.id,
-            label: variable,
-            arrows: 'to'
-          });
-        } 
-        // Root Input Case: Read from raw input fields (e.g., base qty or price)
-        else {
-          const inputNodeId = `input_${variable}`;
-          nodes.update({ 
-            id: inputNodeId, 
-            label: `Input:\n${variable}`, 
-            shape: 'database',
-            color: '#e5e5e5'
-          });
-          edges.update({ 
-            from: inputNodeId, 
-            to: rule.id, 
-            arrows: 'to' 
-          });
-        }
-      }
-    });
+        // C. Register this rule as the latest provider for its target variable
+        lastUpdatedBy[rule.target] = rule.id;
+      });
+    };
 
-    // C. Register this rule as the latest provider for its target variable
-    lastUpdatedBy[rule.target] = rule.id;
-  });
-};
-
-// 3. Execute the pipeline sequentially using your pre-built engine arrays
-if (this.rulesByScope?.row) {
-  processExecutionChain(this.rulesByScope.row, 'row');
-}
-if (this.rulesByScope?.header) {
-  processExecutionChain(this.rulesByScope.header, 'header');
-}
+    // 3. Execute the pipeline sequentially using your pre-built engine arrays
+    if (this.rulesByScope?.row) {
+      processExecutionChain(this.rulesByScope.row, 'row');
+    }
+    if (this.rulesByScope?.header) {
+      processExecutionChain(this.rulesByScope.header, 'header');
+    }
 
 
 
@@ -146,7 +151,7 @@ if (this.rulesByScope?.header) {
       }
     }
 
-    const container = this.el.nativeElement.firstChild;
+    
 
     /*
     const options = {
@@ -159,22 +164,22 @@ if (this.rulesByScope?.header) {
     }
 */
 
-    const options =   {
-  layout: {
-    hierarchical: {
-      enabled: true,
-      direction: 'LR',        // Left-to-Right layout flows like an execution timeline
-      sortMethod: 'directed', // Follows the arrow directions implicitly
-      nodeSpacing: 150,
-      levelSeparation: 200
-    }
-  },
-  physics: {
-    enabled: false            // Turning off physics prevents rules from jumping around
-  }
-};
+    const options = {
+      layout: {
+        hierarchical: {
+          enabled: true,
+          direction: 'LR',        // Left-to-Right layout flows like an execution timeline
+          sortMethod: 'directed', // Follows the arrow directions implicitly
+          nodeSpacing: 150,
+          levelSeparation: 200
+        }
+      },
+      physics: {
+        enabled: false            // Turning off physics prevents rules from jumping around
+      }
+    };
 
-    
+ 
     new Network(container, { nodes, edges }, options);
   }
 }

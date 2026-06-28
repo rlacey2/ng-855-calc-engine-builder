@@ -11,6 +11,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { EngineAdapterService } from '../../shared/engineAdapterService';
 import { MonacoEditorWrapperComponent } from '../MonacoEditor/MonacoEditor.component';
 import { MonacoOptionsService } from '../MonacoEditor/MonacoOptionsService';
+import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 
 @Component({
   selector: 'data-t3',
@@ -18,7 +19,11 @@ import { MonacoOptionsService } from '../MonacoEditor/MonacoOptionsService';
   templateUrl: './datat3.component.html',
   imports: [
     JsonPipe,
-    FormsModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MonacoEditorWrapperComponent],
+    FormsModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MonacoEditorWrapperComponent,
+      MonacoEditorModule,
+    MatFormFieldModule,
+    FormsModule,
+  ],
 
 })
 
@@ -43,6 +48,8 @@ export class DataT3Component {
 
   t3data = ''
 
+  t3data2 = ''
+
   t3dataFG: FormGroup = this.engineAdapterService.get_t3dataFG()
 
   cd = inject(ChangeDetectorRef)
@@ -51,6 +58,7 @@ export class DataT3Component {
 
   constructor() {
     console.log('wire in data for specific event')
+    this.editorDefaultOptions = this.monacoOptionsService.editorDefaultOptions
   }
 
   ngOnInit() {
@@ -63,8 +71,8 @@ export class DataT3Component {
  // not needed in this function this.cd.detectChanges();
 */
 
-    // make this static
-    this.editorDefaultOptions = this.monacoOptionsService.editorDefaultOptions
+   
+    
   }
 
   ngAfterViewInit(): void {

@@ -41,10 +41,7 @@ export class MonacoDiffEditorComponent implements ControlValueAccessor {
   // originalModel: DiffEditorModel = this.jsonDiff({ "id": "h_total", "type": "aggregation", "scope": "header", "target": "total", "expression": "rows.reduce((s,r)=>s+r.subTotal,0)", "priority": 2 })
 
   // modifiedModel: DiffEditorModel = this.jsonDiff({ "id": "h_total", "type": "aggregation", "scope": "header", "target": "total", "expression": "rows.reduce((s,r)=>s+r.subTotal,0)", "priority": 2 })
-
- 
-  // @Input() message!: Signal<string>;
-
+  
   cd = inject(ChangeDetectorRef)
 
   engineAdapterService = inject(EngineAdapterService)
