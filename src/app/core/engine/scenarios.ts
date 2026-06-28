@@ -126,6 +126,62 @@ export const scenarioSet: any =
     }
   },
 
+
+  "scenario_03": {
+
+    "rules":
+      [ 
+        // sequential stored out of order to prove priority works as a sort value
+        { "id": "d_1", "type": "calculation", "scope": "row", "target": "subTotal22", "expression": "qty2 * price2 * xyz", "priority": 1 },
+     ]
+    ,
+
+     "data": {
+      "header": {
+         "scenario_02": 0,
+      
+        "subTotal": 0,
+        "vatTotal": 0,
+        "discountTotal": 0,
+        "discountTotalB": 0,
+        "commissionTotal": 0,
+        "grandTotal": 0,
+        "total": 0,
+        "vatRate": 0.2,
+        "discountRate": 0.09,
+        "commissionRate": 0.07
+      },
+      "details": [
+        {
+          
+          "qty": 2,
+          "price": 10.99,
+          "subTotal": 0,
+          "discount": 0,
+          "vat": 0,
+          "total": 0,
+          "string1": "alpha",
+          "string2": "beta",
+          "result": ""
+        },
+        {
+          "xyz": .20,
+          "qty": 5,
+          "price": 6.88,
+          "subTotal": 0,
+          "discount": 0,
+          "vat": 0,
+          "total": 0,
+          "string1": "alpha",
+          "string2": "alpha",
+          "result": ""
+        }
+      ]
+    }
+  },
+
+
+  
 }
 
 export const scenarioKeys: string[] = Object.keys(scenarioSet);
