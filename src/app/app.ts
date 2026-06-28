@@ -6,7 +6,7 @@ import { RuleEditorComponent } from './features/rules/rule-editor.component';
 import { DependencyGraphComponent } from './features/graph/dependency-graph.component';
 import { scenarioSet, scenarioKeys } from './core/engine/scenarios'
 import { DataT3Component } from './features/data/datat3.component';
-import { Rule } from './core/engine/types';
+
 import { EngineAdapterService } from './shared/engineAdapterService';
 import { MonacoDiffEditorComponent } from "./features/MonacoEditor/MonacoDiffEditor.component";
 import { JsonPipe } from '@angular/common';
@@ -15,6 +15,7 @@ import { TraceViewerComponent } from "./features/trace/trace-viewer.component";
 import { MonacoOptionsService } from './features/MonacoEditor/MonacoOptionsService';
 import { MonacoEditorModule } from "ngx-monaco-editor-v2";
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatTabsModule } from '@angular/material/tabs';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -32,6 +33,7 @@ import { FormsModule } from '@angular/forms';
     MonacoEditorModule,
     MatFormFieldModule,
     FormsModule,
+    MatTabsModule
 
   ],
   templateUrl: './app.html'

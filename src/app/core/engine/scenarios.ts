@@ -99,7 +99,7 @@ export const scenarioSet: any =
       },
       "details": [
         {
-             "xyz": .20,
+          
           "qty": 2,
           "price": 10.99,
           "subTotal": 0,
@@ -111,6 +111,7 @@ export const scenarioSet: any =
           "result": ""
         },
         {
+          "xyz": .20,
           "qty": 5,
           "price": 6.88,
           "subTotal": 0,
