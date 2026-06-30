@@ -72,10 +72,11 @@ ngx-monaco-editor {
 /* styles the placebo button to fit the ultra-thin header */
 .placebo-btn,
 .btn-sm {
-  height: 22px;
+  height: 18px;
   line-height: 14px;
   padding: 0 2px;
   font-size: 12px;
+  margin-top: 2px;
 }
 
 .sectionHeader {

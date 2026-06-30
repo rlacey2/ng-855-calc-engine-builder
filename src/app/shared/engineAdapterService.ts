@@ -131,29 +131,36 @@ export class EngineAdapterService {
 
     this.existingIds = new Set<string>(rulesSorted.map(item => item.id));
 
-    console.log(this.existingIds)
+  //  console.log(this.existingIds)
 
   }
 
   calculate() {
-    console.log('expects form data')
+  //  console.log('expects form data')
     // rebuild engine based on current rules
     this.engine = new CalcEngine(this.rules(), this.engineConfig) // prepare the engine's internals
 
     this.originalModel.set({ ...this.t3FormFG.getRawValue() })
-    console.log(this.t3FormFG.getRawValue().details[0].subTotal)
+ //   console.log(this.t3FormFG.getRawValue().details[0].subTotal)
 
     const res = this.engine.recalcAll(this.t3FormFG);
 
     this.modifiedModel.set({ ...this.t3FormFG.getRawValue() })
-    console.log(this.t3FormFG.getRawValue().details[0].subTotal)
+  //  console.log(this.t3FormFG.getRawValue().details[0].subTotal)
 
     let trace = this.engine.getTrace()
 
     this.outputTrace.set(trace);
 
-    console.log(this.outputTrace().length)
+  //  console.log(this.outputTrace().length)
   }
+
+  render() {
+     console.log('render')
+      this.dataInputs.set( { })
+      this.dataInputs.set( {...this.dataInputs()})
+
+}
 
   patch() {
     console.log('patch')

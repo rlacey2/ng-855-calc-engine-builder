@@ -163,7 +163,7 @@ export class CalcEngine {
   }
 
   createEngine(rules: Rule[], engineConfig: CalcEngineConfig = {}) {
-    console.log("ensure disabled/hidden fields are available to the logic")
+    // console.log("ensure disabled/hidden fields are available to the logic")
 
     this.config = engineConfig ?? {};
     this.roundingMode = this.config.roundingMode ?? 'none';
@@ -178,7 +178,7 @@ export class CalcEngine {
         const compiledWhen = rule.when ? compileDSL(rule.when) : null;
 
         //   console.log(rule.expression)
-        console.log(compiledExpr)
+        // console.log(compiledExpr)
 
         return {
           ...rule,
@@ -204,7 +204,7 @@ export class CalcEngine {
 
   private buildExecutionOrder(rules: any[]) {
 
-    console.log('buildExecutionOrder');
+    // console.log('buildExecutionOrder');
 
     /*
   
@@ -341,18 +341,92 @@ export class CalcEngine {
     return out;
   }
 
+ 
+private resolveRows(input: any) {
+  if (Array.isArray(input)) return input;
+  if (Array.isArray(input?.rows)) return input.rows;
+  return [];
+
+/* had this problem for some reason
+rows = {
+  rows: [
+    { a: 1, b: 2 },
+    { a: 3, b: 4 }
+  ],
+  // maybe other metadata
+}
+  */
+
+
+}
+
 
   /*
 
    a means to find the relevant field value by searching in order
    primary can be a header or a row, depending on the caller
+   i.e. the primary and secondary are switch, to assume local context first
  // row field → extras → header → undefined
+    primary is relative to the caller
+
+   careful here rows is valid property as in a header scope 
+      rows.reduce((s,r)=>s+r.subTotal,0)
+
    */
-  private createProxyContext(primary: any, secondary?: any, extra?: any) {
-    console.log('createProxyContext   check all callers CF header only as parameters do not match')
+  private createProxyContext(primary: any, secondary?: any, rows?: any, extras?: any) {
+    /*
+    rows is an array to be used in header calcs reduce type operations,
+    it will be found via a get(_, "rows")
+    return 
+    ctx.rows.reduce((s, r) => ctx.aa + ctx.bb, 0)
+
+    extras is per detail row and represents its extra array of fields by attriute key
+    */
+
     return new Proxy({}, {
       get: (_, prop: string) => {
-        if (extra && prop in extra) return extra[prop];
+        console.log('Proxy')
+
+        // Allow JS internals & array methods
+        if (typeof prop === 'symbol') return undefined;
+
+        if (prop === 'toJSON') return undefined;
+
+        if (extras && prop in extras) return extras[prop]
+
+
+        /*       
+                 if (rows && prop in rows) {  // header level 
+               //    console.log('Proxy rows')
+                   return rows[prop]; // this is all the data rows/details needed by a header calculation such as reduce
+                 }
+      */
+
+     //   if (prop === 'rows' && Array.isArray(rows)) {
+     const row2 = this.resolveRows(rows)
+ if (prop === 'rows' && row2 ) {
+ 
+          // need to be able to drill down into extras as well as at the row level
+          const proxiedRows = row2.map( (row: any) => {
+
+            const extrasObj = Array.isArray(row.extras)
+              ? Object.assign({}, ...row.extras)
+              : row.extras;
+ 
+            // recursive call
+            return this.createProxyContext(
+              row,          // primary
+              primary,    // secondary // the original header passed in as primary, becomes secondary now
+              undefined,    // rows (not needed inside row)
+              extrasObj     // extras flattened
+            );
+
+          });
+
+          // CRITICAL: return raw array (not proxied)
+          return proxiedRows;
+        }
+ 
         if (primary && prop in primary) return primary[prop];
         if (secondary && prop in secondary) return secondary[prop];
         return undefined;
@@ -360,33 +434,33 @@ export class CalcEngine {
     });
   }
 
-/*
-  // row field → extras → header → undefined
-  createProxyContext2(row: any, header: any, extra?: any) {
-    return new Proxy({}, {
-      get: (_, prop: string) => {
-
-        // 1. Row direct fields
-        if (prop in row) return row[prop];
-
-        // 2. Extras (flattened)
-        if (row._extras && prop in row._extras) {
-          return row._extras[prop];
+  /*
+    // row field → extras → header → undefined
+    createProxyContext2(row: any, header: any, extra?: any) {
+      return new Proxy({}, {
+        get: (_, prop: string) => {
+  
+          // 1. Row direct fields
+          if (prop in row) return row[prop];
+  
+          // 2. Extras (flattened)
+          if (row._extras && prop in row._extras) {
+            return row._extras[prop];
+          }
+  
+          // 3. Header fallback
+          if (prop in header) return header[prop];
+  
+          return undefined;
+        },
+  
+        set: (_, prop: string, value) => {
+          row[prop] = value;
+          return true;
         }
-
-        // 3. Header fallback
-        if (prop in header) return header[prop];
-
-        return undefined;
-      },
-
-      set: (_, prop: string, value) => {
-        row[prop] = value;
-        return true;
-      }
-    });
-  }
-*/
+      });
+    }
+  */
 
   private shouldRunRule(rule: any, ctx: any): boolean {
     // console.log('shouldRunRule')
@@ -449,14 +523,15 @@ export class CalcEngine {
 
   }
 
-
-
   calcHeaders(header: any, rows: any) {
     // multiple callers
-    // Execute all header-scoped rules sequentially against the header dataset
+    // Execute all header-scoped rules sequentially against the header dataset and rows i.e. the details 
+
+    console.log('calcHeaders')
     for (const rule of this.rulesByScope.header) {
 
-      const ctx: any = this.createProxyContext(header, null, { rows }); // must stay inside loop, to get mutated context
+      // the header rules need all the rows available to reduce etc
+      const ctx: any = this.createProxyContext(header, null, { rows }, null); // must stay inside loop, to get mutated context
 
       const inputSnapshot: any = {};
       rule.dependsOn.forEach((d: string) => inputSnapshot[d] = ctx[d]);
@@ -484,7 +559,6 @@ export class CalcEngine {
       });
     }
   }
-
 
   // =========================================================================
   // 🔹 Calculation Trace
@@ -546,7 +620,7 @@ export class CalcEngine {
       for (const rule of this.rulesByScope.row) { // data input rows
 
         // allow access to an input stored in header/row/row.extras
-        const ctx: any = this.createProxyContext(row, header, row.extras); // must stay inside loop, to get mutated context
+        const ctx: any = this.createProxyContext(row, header, null, row.extras); // must stay inside loop, to get mutated context
 
         const inputSnapshot: any = {};
         rule.dependsOn.forEach((d: string) => inputSnapshot[d] = ctx[d]);
@@ -575,7 +649,7 @@ export class CalcEngine {
       }
     }
 
-    this.calcHeaders(header, rows)
+    this.calcHeaders(header, rows) // these are data inputs
 
     // Final-only rounding
     if (this.roundingMode === 'final-only') {
@@ -628,7 +702,8 @@ export class CalcEngine {
 
       for (const rule of this.rulesByScope.row) { // data input rows
 
-     const ctx: any = this.createProxyContext(row, header, row.extras); // must stay inside loop, to get mutated context
+        // allow access to an input stored in header/row/row.extras
+        const ctx: any = this.createProxyContext(row, header, null, row.extras); // must stay inside loop, to get mutated context
 
         const inputSnapshot: any = {};
         rule.dependsOn.forEach((d: string) => inputSnapshot[d] = ctx[d]);

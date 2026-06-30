@@ -57,7 +57,7 @@ export class DataT3Component {
   editorDefaultOptions: any;
 
   constructor() {
-    console.log('wire in data for specific event')
+   // console.log('wire in data for specific event')
     this.editorDefaultOptions = this.monacoOptionsService.editorDefaultOptions
   }
 

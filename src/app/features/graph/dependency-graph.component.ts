@@ -12,29 +12,23 @@ import { DataSet } from 'vis-data'; // If you need DataSet, it lives here now
 export class DependencyGraphComponent {
 
   @Input() rulesByScope: { header: any[]; row: any[] } = { header: [], row: [] };
-  @Input() headerSample: any  // the sample row fields that rules work on
+  @Input() headerSample: any      // the sample row fields that rules work on
   @Input() detailsSample: any     // the sample header data fields that rules work on
+  @Input() refreshGraph: any = { }
 
   private el = inject(ElementRef)
   constructor() {
 
-    //  this.render()
   }
-
-  /*
-  ngAfterViewInit() {
-    this.render();
-  } 
-*/
+ 
   ngOnChanges(changes: SimpleChanges) {
-    //  this.render(); 
+   
     console.log('ngOnChanges')
-    if (changes['rulesByScope'] && changes['rulesByScope'].currentValue) {
+    if (changes['refreshGraph'] || changes['rulesByScope'] && changes['rulesByScope'].currentValue) {
       this.render(this.headerSample, this.detailsSample);
     }
   }
-
-
+ 
   private getNodeStyle(type: string) {
 
     switch (type) {
@@ -186,7 +180,8 @@ export class DependencyGraphComponent {
         // A. Generate unique node for this specific rule execution
         nodes.update({
           id: rule.id,
-          label: `[${scopeName.toUpperCase()}]\n${rule.id}\nTarget: ${rule.target}`,
+          label: `Target: ${rule.target}\n[${scopeName.toUpperCase()}]\n${rule.id}`,
+       //   label: `[${scopeName.toUpperCase()}]\n${rule.id}\nTarget: ${rule.target}`,
           shape: scopeName === 'header' ? 'ellipse' : 'box',
           color: scopeName === 'header'
             ? { background: '#e7ee23', border: '#b6a23c' }  // header
@@ -207,7 +202,7 @@ export class DependencyGraphComponent {
         //const possibleVars = ['qty', 'price', 'subTotal', 'rows', 'xyz' ,'aa', 'bb'];
 
         const possibleVars = this.extractDependencies(rule)
-        console.log(possibleVars)
+      // console.log(possibleVars)
 
         possibleVars.forEach((variable) => {
 
@@ -219,12 +214,12 @@ export class DependencyGraphComponent {
             const sourceType = this.resolveFieldSource(variable, rule.scope, registry);
 
             // 🟣 SPECIAL: aggregation from rows → header
-
+console.log('NEED to MAKE THIS GENERIC')
             if (variable === 'rows' && lastUpdatedBy['subTotal']) {
               edges.update({
                 from: lastUpdatedBy['subTotal'],
                 to: rule.id,
-                label: 'row data stream',
+                label: 'row data',
                 arrows: 'to',
                 dashes: true
               });
@@ -268,7 +263,7 @@ export class DependencyGraphComponent {
 
               nodes.update({
                 id: inputNodeId,
-                label: `${variable}\n\n(${sourceType})`,
+                label: `${variable}\n(${sourceType})`,
                 //   shape: sourceType === 'extras' ? 'dot' : 'square',
                 color: this.getNodeStyle(sourceType),
                 font: { size: 12 }

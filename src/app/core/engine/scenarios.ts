@@ -136,10 +136,12 @@ export const scenarioSet: any =
     "rules":
       [
         // sequential stored out of order to prove priority works as a sort value
+     
         {
           "id": "d_1", "type": "calculation", "scope": "row", "target":
             "subTotal", "expression": "aa * bb *qty * price * xyz", "priority": 1,
         },
+        /*
         {
           "id": "d_2", "type": "calculation", "scope": "row", "target":
             "subTotal", "expression": "100", "priority": 1, "when": "subTotal > 100"
@@ -148,17 +150,26 @@ export const scenarioSet: any =
           "id": "h_1", "type": "aggregate", "scope": "header", "target":
             "subTotal", "expression": "rows.reduce((s,r)=>s+r.subTotal,0)", "priority": 1
         },
-              {
+        */
+        {
           "id": "h_2", "type": "aggregate", "scope": "header", "target":
             "countX", "expression": "rows.reduce((s,r)=>s+1,0)", "priority": 1
         },
+
+    
+{
+          "id": "h_3", "type": "aggregate", "scope": "header", "target":
+            "aabb", "expression": "rows.reduce((s, r) => s + r.aa + r.bb, 0)", "priority": 1
+        },     
       ]
+
     ,
 
     "data": {
       "header": {
         "scenario_03": 0,
         "countX": 0,
+        "aabb": 0,
 
         "subTotal": 0,
         "vatTotal": 0,
@@ -183,9 +194,10 @@ export const scenarioSet: any =
           "string1": "alpha",
           "string2": "beta",
           "result": "",
-          "extras": [{ "aa": 2, "bb": 2 }]
+          "extras": [{ "aa": 1, "bb": 2 }]
 
         },
+ 
         {
           "xyz": 3,
           "qty": 3,
@@ -197,9 +209,10 @@ export const scenarioSet: any =
           "string1": "alpha",
           "string2": "alpha",
           "result": "",
-          "extras": [{ "aa": 2, "bb": 2 }]
+          "extras": [{ "aa": 3, "bb": 4 }]
 
         }
+        
       ]
     }
   },

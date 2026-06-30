@@ -49,11 +49,9 @@ export class MonacoDiffEditorComponent implements ControlValueAccessor {
 
   value: string = '';
   disabled: boolean = false;
-
-
+ 
   editorOptionsDiff = this.monacoOptionsService.editorOptionsDiff
-
-
+ 
   // Callbacks registered by Angular Forms
   private onChange: (value: string) => void = () => { };
   private onTouched: () => void = () => { };
@@ -61,11 +59,9 @@ export class MonacoDiffEditorComponent implements ControlValueAccessor {
   // Intercepts input changes from the parent component
  
   ngOnChanges(changes: SimpleChanges): void {
-    console.log('ngOnChanges')
-    console.log(changes)
-
+  //  console.log('ngOnChanges')
+  //  console.log(changes)
  
-
  this.originalDiffEditorModel  = this.jsonDiff(changes['originalModel'].currentValue ) 
  this.modifiedDiffEditorModel  = this.jsonDiff(changes['modifiedModel'].currentValue ) 
   /*
