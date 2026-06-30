@@ -140,12 +140,15 @@ export const scenarioSet: any =
           "subTotal", "expression": "aa * bb *qty * price * xyz", "priority": 1, },
         { "id": "d_2", "type": "calculation", "scope": "row", "target": 
           "subTotal", "expression":"100", "priority": 1,  "when": "subTotal > 100"},
+                  { "id": "h_1", "type": "aggregate", "scope": "header", "target": 
+          "countX", "expression":"rows.reduce((s,r)=>s+r.subTotal,0)", "priority": 1 },
       ]
-    ,
+    ,  
 
     "data": {
       "header": {
         "scenario_03": 0,
+        "countX": 0,
 
         "subTotal": 0,
         "vatTotal": 0,
