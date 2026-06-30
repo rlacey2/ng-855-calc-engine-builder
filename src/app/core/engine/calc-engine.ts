@@ -169,14 +169,16 @@ export class CalcEngine {
     this.roundingMode = this.config.roundingMode ?? 'none';
     this.debug = !!this.config.debug;
 
+
+    // compile the relevant rules using the DSL
     const compiled = rules
       .filter(r => !r.ignore)
       .map(rule => {
         const compiledExpr = compileDSL(rule.expression);
         const compiledWhen = rule.when ? compileDSL(rule.when) : null;
 
-     //   console.log(rule.expression)
-     //   console.log(compiledExpr)
+       console.log(rule.expression)
+       console.log(compiledExpr)
 
         return {
           ...rule,
@@ -339,7 +341,9 @@ private flattenExtras(extras: any[]): Record<string, any> {
   return out;
 }
 
- 
+
+
+  // a means to find the relevant field value by searching in order
   private createProxyContext(primary: any, secondary?: any, extra?: any) {
     return new Proxy({}, {
       get: (_, prop: string) => {
@@ -438,8 +442,6 @@ createProxyContext2(row: any, header: any, extra?: any) {
   return [...new Set(tokens.filter(t => !reserved.has(t)))];
 }
 
-
-
   calcHeaders(header: any, rows: any) {
     // multiple callers
     // Execute all header-scoped rules sequentially against the header dataset
@@ -514,9 +516,9 @@ createProxyContext2(row: any, header: any, extra?: any) {
     // Use getRawValue() so disabled/read-only controls are included
     const rawFormValues = form.getRawValue();
     const header = { ...rawFormValues.header };
-  //  const rows = rawFormValues.details.map((row: any) => ({ ...row }));
+    const rows = rawFormValues.details.map((row: any) => ({ ...row }));
 
-
+/*
       // handles the extras by promoting to detail item level from nested array as a map
       const rows = rawFormValues.details.map((row: any) => {
         const extrasMap = this.flattenExtras(row.extras);
@@ -526,7 +528,7 @@ createProxyContext2(row: any, header: any, extra?: any) {
           _extras: extrasMap // safe namespace
         };
       });
-
+*/
 
 
     let dataN = 0
@@ -534,6 +536,7 @@ createProxyContext2(row: any, header: any, extra?: any) {
       dataN++
       for (const rule of this.rulesByScope.row) { // data input rows
 
+        // allow access to an input stored in header/row/row.extras
         const ctx: any = this.createProxyContext(row, header); // must stay inside loop, to get mutated context
 
         const inputSnapshot: any = {};

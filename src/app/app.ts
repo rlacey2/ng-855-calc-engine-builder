@@ -61,9 +61,10 @@ export class AppComponent {
   originalModel: any
   modifiedModel: any
 
-  panelStates: boolean[] = [true, false, true, false, false];
+  panelStates: boolean[] = [false, true, false, false, false];
 
-  options = { scenario: 'New' }
+  //options = { scenario: 'New' }
+    options = { scenario: 'scenario_02' }
 
   rulesMonaco: string = '{}';
 
@@ -111,6 +112,9 @@ export class AppComponent {
 
     this.originalModel = this.engineAdapterService.originalModel  // no () on the signal yet
     this.modifiedModel = this.engineAdapterService.modifiedModel  // no () on the signal yet
+
+
+    this.onScenarioChange()
   }
 
 

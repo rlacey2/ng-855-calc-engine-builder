@@ -1,6 +1,6 @@
 export type RuleType = "calculation" | "validation" | "aggregation" | "assignment" | "lookup";
 
- 
+
 /*
 export interface Rule {
   id: string;
@@ -10,12 +10,12 @@ export interface Rule {
 }
 */
 
- 
+
 
 export type CalcContext = Record<string, any>;
 
 export type CalcEngineConfig = {
-  
+
   /*
    round per row may lead to cumulative error
 
@@ -115,16 +115,25 @@ Rule rounding = 4	    overrides global
 Value = 0/null	      no unnecessary rounding
   */
 
-ignore?: boolean;
+  ignore?: boolean;
 
   description?: string;
   tag?: string;
 
   createdAt?: string;
- updatedAt?: string;
+  updatedAt?: string;
   dependsOn?: object;
 };
 
+interface GraphNode {
+  id: string;
+  label: string;
+  type: 'row' | 'extras' | 'header' | 'calc';
+}
 
+interface GraphEdge {
+  from: string;
+  to: string;
+  ruleId: string;
+}
 
- 

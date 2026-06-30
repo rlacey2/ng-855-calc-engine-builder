@@ -84,7 +84,16 @@
 
       </mat-expansion-panel-header>
 
-      <dependency-graph [rulesByScope]="engineAdapterService.rulesByScope()"></dependency-graph>
+      @if(this.engineAdapterService.dataInputs() ) {
+
+ 
+      <dependency-graph [rulesByScope]="engineAdapterService.rulesByScope()"
+      [headerSample]="this.engineAdapterService.dataInputs().header"
+      [detailsSample]="this.engineAdapterService.dataInputs().details[0]"
+      >
+ 
+      </dependency-graph>
+        }
 
     </mat-expansion-panel>
 

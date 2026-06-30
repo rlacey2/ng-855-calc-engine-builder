@@ -99,7 +99,7 @@ export const scenarioSet: any =
       },
       "details": [
         {
-          
+          "xyz": .20,
           "qty": 2,
           "price": 10.99,
           "subTotal": 0,
@@ -108,7 +108,9 @@ export const scenarioSet: any =
           "total": 0,
           "string1": "alpha",
           "string2": "beta",
-          "result": ""
+          "result": "",
+            "extras" : [ {"aa": 11, "bb": 22}]
+        
         },
         {
           "xyz": .20,
@@ -120,7 +122,9 @@ export const scenarioSet: any =
           "total": 0,
           "string1": "alpha",
           "string2": "alpha",
-          "result": ""
+          "result": "",
+            "extras" : [ {"aa": 11, "bb": 22}]
+       
         }
       ]
     }
@@ -132,7 +136,7 @@ export const scenarioSet: any =
     "rules":
       [ 
         // sequential stored out of order to prove priority works as a sort value
-        { "id": "d_1", "type": "calculation", "scope": "row", "target": "subTotal22", "expression": "qty2 * price2 * xyz", "priority": 1 },
+        { "id": "d_1", "type": "calculation", "scope": "row", "target": "subTotal", "expression": "qty * price * xyz", "priority": 1 },
      ]
     ,
 
@@ -153,7 +157,7 @@ export const scenarioSet: any =
       },
       "details": [
         {
-          
+           "xyz": .20,
           "qty": 2,
           "price": 10.99,
           "subTotal": 0,
@@ -162,7 +166,9 @@ export const scenarioSet: any =
           "total": 0,
           "string1": "alpha",
           "string2": "beta",
-          "result": ""
+          "result": "",
+                "extras" : [ {"aa": 11, "bb": 22}]
+    
         },
         {
           "xyz": .20,
@@ -174,14 +180,15 @@ export const scenarioSet: any =
           "total": 0,
           "string1": "alpha",
           "string2": "alpha",
-          "result": ""
+          "result": "",
+       "extras" : [ {"aa": 11, "bb": 22}]
         }
       ]
     }
   },
 
 
-  
+   
 }
 
 export const scenarioKeys: string[] = Object.keys(scenarioSet);
