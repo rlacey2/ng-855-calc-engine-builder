@@ -150,20 +150,20 @@ function compileDSL(exprString: string) {  // Domain Specific Language i.e. a gr
 export class CalcEngine {
   // an engine should be associated with a form.
   // coded currently that the engine key functions are passed the form, so one engine is reusable
-  private rulesByScope: { row: any[]; header: any[] } = { row: [] , header: [] };
+  private rulesByScope: { row: any[]; header: any[] } = { row: [], header: [] };
   private config: CalcEngineConfig = {};
   private roundingMode: string = 'none';
   private debug: boolean = false;
   private traceLog: any[] = [];
 
   constructor(rules: Rule[], engineConfig: CalcEngineConfig = {}) {
- 
+
     this.createEngine(rules, engineConfig)
- 
+
   }
 
   createEngine(rules: Rule[], engineConfig: CalcEngineConfig = {}) {
-       console.log("ensure disabled/hidden fields are available to the logic")
+    console.log("ensure disabled/hidden fields are available to the logic")
 
     this.config = engineConfig ?? {};
     this.roundingMode = this.config.roundingMode ?? 'none';
@@ -177,8 +177,8 @@ export class CalcEngine {
         const compiledExpr = compileDSL(rule.expression);
         const compiledWhen = rule.when ? compileDSL(rule.when) : null;
 
-    //   console.log(rule.expression)
-       console.log(compiledExpr)
+        //   console.log(rule.expression)
+        console.log(compiledExpr)
 
         return {
           ...rule,
@@ -194,158 +194,162 @@ export class CalcEngine {
     };
   }
 
- get_rulesByScope() {
-  return this.rulesByScope
- }
+  get_rulesByScope() {
+    return this.rulesByScope
+  }
 
   // =========================================================================
   // Dependency Graph + Circular Detection
   // =========================================================================
 
-private buildExecutionOrder(rules: any[]) {
+  private buildExecutionOrder(rules: any[]) {
 
-  console.log('buildExecutionOrder');
+    console.log('buildExecutionOrder');
 
-  /*
+    /*
+  
+    called twice:
+      row
+      header
+  
+   two guard rails:
+   Filter out self-references: A rule must never look outside itself for its own target name.
+   Target only the final pipeline step: External rules depending on subTotal should only link to the very last
+    (highest priority) rule of that target sequence. That final rule will then safely pull the rest of its 
+    chain backward via the internal priority links.
+  
+    */
 
-  called twice:
-    row
-    header
+    const result: any[] = [];
+    const visited = new Set<string>();
+    const visiting = new Set<string>();
 
- two guard rails:
- Filter out self-references: A rule must never look outside itself for its own target name.
- Target only the final pipeline step: External rules depending on subTotal should only link to the very last
-  (highest priority) rule of that target sequence. That final rule will then safely pull the rest of its 
-  chain backward via the internal priority links.
+    const getKey = (r: any) => `${r.scope}:${r.target}:${r.id}`;
 
-  */
+    const rowTargetMap = new Map<string, any[]>();
+    const headerTargetMap = new Map<string, any[]>();
 
-  const result: any[] = [];
-  const visited = new Set<string>();
-  const visiting = new Set<string>();
-
-  const getKey = (r: any) => `${r.scope}:${r.target}:${r.id}`;
-
-  const rowTargetMap = new Map<string, any[]>();
-  const headerTargetMap = new Map<string, any[]>();
-
-  for (const r of rules) {
-    const map = r.scope === 'row' ? rowTargetMap : headerTargetMap;
-    if (!map.has(r.target)) {
-      map.set(r.target, []);
-    }
-    map.get(r.target)!.push(r);
-  }
-
-  // ⛓️ Link sequential rules by priority order
-  const sortAndLinkByPriority = (rulesGroup: any[]) => {
-    rulesGroup.sort((a, b) => (a.priority ?? 999) - (b.priority ?? 999));
-    for (let i = 1; i < rulesGroup.length; i++) {
-      const current = rulesGroup[i];
-      const previous = rulesGroup[i - 1];
-      
-      if (!current._internalDeps) current._internalDeps = [];
-      current._internalDeps.push(previous);
-    }
-  };
-
-  rowTargetMap.forEach(sortAndLinkByPriority);
-  headerTargetMap.forEach(sortAndLinkByPriority);
-
-  // 🔍 Fixed Resolver: Only returns the LAST rule in the priority sequence
-  const resolveExternalDependency = (rule: any, dep: string): any | null => {
-    // 🛑 Rule 1: A rule cannot look externally for its own target sequence
-    if (rule.target === dep) {
-      return null; 
-    }
-
-    let matchingRules: any[] = [];
-    if (rule.scope === 'row') {
-      matchingRules = [...(rowTargetMap.get(dep) ?? []), ...(headerTargetMap.get(dep) ?? [])];
-    } else if (rule.scope === 'header') {
-      matchingRules = headerTargetMap.get(dep) ?? [];
-    }
-
-    if (matchingRules.length === 0) return null;
-
-    // 🛑 Rule 2: Only depend on the LATEST rule in the chain.
-    // The internal chain (_internalDeps) will naturally pull the earlier rules down in order.
-    return matchingRules.reduce((max, r) => ((r.priority ?? 999) > (max.priority ?? 999) ? r : max), matchingRules[0]);
-  };
-
-  // 🔄 DFS (topological sort)
-  const visit = (rule: any) => {
-    const key = getKey(rule);
-
-    if (visited.has(key)) return;
-
-    if (visiting.has(key)) {
-      throw new Error(`❌ Circular dependency detected at ${key}`);
-    }
-
-    visiting.add(key);
-
-    // 1. Process previous priority steps first (e.g., d_1 -> d_2 -> d_3)
-    for (const intDep of rule._internalDeps ?? []) {
-      visit(intDep);
-    }
-
-    // 2. Process external dependencies safely
-    for (const dep of rule.dependsOn ?? []) {
-      const depRule = resolveExternalDependency(rule, dep);
-      if (depRule) {
-        visit(depRule);
+    for (const r of rules) {
+      const map = r.scope === 'row' ? rowTargetMap : headerTargetMap;
+      if (!map.has(r.target)) {
+        map.set(r.target, []);
       }
+      map.get(r.target)!.push(r);
     }
 
-    visiting.delete(key);
-    visited.add(key);
+    // ⛓️ Link sequential rules by priority order
+    const sortAndLinkByPriority = (rulesGroup: any[]) => {
+      rulesGroup.sort((a, b) => (a.priority ?? 999) - (b.priority ?? 999));
+      for (let i = 1; i < rulesGroup.length; i++) {
+        const current = rulesGroup[i];
+        const previous = rulesGroup[i - 1];
 
-    result.push(rule);
-  };
+        if (!current._internalDeps) current._internalDeps = [];
+        current._internalDeps.push(previous);
+      }
+    };
 
-  // Seed DFS
-  const sortedInput = [...rules].sort((a, b) => {
-    const pA = 1000 + (a.priority ?? 999);
-    const pB = 1000 + (b.priority ?? 999);
-  // if (pA !== pB) return pA - pB;
+    rowTargetMap.forEach(sortAndLinkByPriority);
+    headerTargetMap.forEach(sortAndLinkByPriority);
 
-    const kA = `${a.scope}:${a.target}:${pA}`;
-    const kB = `${b.scope}:${b.target}:${pB}`;
-    return kA.localeCompare(kB);
-  });
+    // 🔍 Fixed Resolver: Only returns the LAST rule in the priority sequence
+    const resolveExternalDependency = (rule: any, dep: string): any | null => {
+      // 🛑 Rule 1: A rule cannot look externally for its own target sequence
+      if (rule.target === dep) {
+        return null;
+      }
 
-  for (const rule of sortedInput) {
-    visit(rule);
+      let matchingRules: any[] = [];
+      if (rule.scope === 'row') {
+        matchingRules = [...(rowTargetMap.get(dep) ?? []), ...(headerTargetMap.get(dep) ?? [])];
+      } else if (rule.scope === 'header') {
+        matchingRules = headerTargetMap.get(dep) ?? [];
+      }
+
+      if (matchingRules.length === 0) return null;
+
+      // 🛑 Rule 2: Only depend on the LATEST rule in the chain.
+      // The internal chain (_internalDeps) will naturally pull the earlier rules down in order.
+      return matchingRules.reduce((max, r) => ((r.priority ?? 999) > (max.priority ?? 999) ? r : max), matchingRules[0]);
+    };
+
+    // 🔄 DFS (topological sort)
+    const visit = (rule: any) => {
+      const key = getKey(rule);
+
+      if (visited.has(key)) return;
+
+      if (visiting.has(key)) {
+        throw new Error(`❌ Circular dependency detected at ${key}`);
+      }
+
+      visiting.add(key);
+
+      // 1. Process previous priority steps first (e.g., d_1 -> d_2 -> d_3)
+      for (const intDep of rule._internalDeps ?? []) {
+        visit(intDep);
+      }
+
+      // 2. Process external dependencies safely
+      for (const dep of rule.dependsOn ?? []) {
+        const depRule = resolveExternalDependency(rule, dep);
+        if (depRule) {
+          visit(depRule);
+        }
+      }
+
+      visiting.delete(key);
+      visited.add(key);
+
+      result.push(rule);
+    };
+
+    // Seed DFS
+    const sortedInput = [...rules].sort((a, b) => {
+      const pA = 1000 + (a.priority ?? 999);
+      const pB = 1000 + (b.priority ?? 999);
+      // if (pA !== pB) return pA - pB;
+
+      const kA = `${a.scope}:${a.target}:${pA}`;
+      const kB = `${b.scope}:${b.target}:${pB}`;
+      return kA.localeCompare(kB);
+    });
+
+    for (const rule of sortedInput) {
+      visit(rule);
+    }
+
+    return result.map(({ _internalDeps, ...cleanRule }) => cleanRule);
   }
 
-  return result.map(({ _internalDeps, ...cleanRule }) => cleanRule);
-}
- 
   // =========================================================================
   // 🔧 Helpers
   // =========================================================================
 
 
-private flattenExtras(extras: any[]): Record<string, any> {
-  // to catch the adhoc fields by flattening them into the parent for calculations
-  const out: any = {};
+  private flattenExtras(extras: any[]): Record<string, any> {
+    // to catch the adhoc fields by flattening them into the parent for calculations
+    const out: any = {};
 
-  if (!extras) return out;
+    if (!extras) return out;
 
-  for (const obj of extras) {
-    const key = Object.keys(obj)[0];
-    out[key] = obj[key];
+    for (const obj of extras) {
+      const key = Object.keys(obj)[0];
+      out[key] = obj[key];
+    }
+
+    return out;
   }
 
-  return out;
-}
 
+  /*
 
-
-  // a means to find the relevant field value by searching in order
+   a means to find the relevant field value by searching in order
+   primary can be a header or a row, depending on the caller
+ // row field → extras → header → undefined
+   */
   private createProxyContext(primary: any, secondary?: any, extra?: any) {
-    console.log('createProxyContext')
+    console.log('createProxyContext   check all callers CF header only as parameters do not match')
     return new Proxy({}, {
       get: (_, prop: string) => {
         if (extra && prop in extra) return extra[prop];
@@ -355,33 +359,34 @@ private flattenExtras(extras: any[]): Record<string, any> {
       }
     });
   }
- 
 
-// row field → extras → header → undefined
-createProxyContext2(row: any, header: any, extra?: any) {
-  return new Proxy({}, {
-    get: (_, prop: string) => {
+/*
+  // row field → extras → header → undefined
+  createProxyContext2(row: any, header: any, extra?: any) {
+    return new Proxy({}, {
+      get: (_, prop: string) => {
 
-      // 1. Row direct fields
-      if (prop in row) return row[prop];
+        // 1. Row direct fields
+        if (prop in row) return row[prop];
 
-      // 2. Extras (flattened)
-      if (row._extras && prop in row._extras) {
-        return row._extras[prop];
+        // 2. Extras (flattened)
+        if (row._extras && prop in row._extras) {
+          return row._extras[prop];
+        }
+
+        // 3. Header fallback
+        if (prop in header) return header[prop];
+
+        return undefined;
+      },
+
+      set: (_, prop: string, value) => {
+        row[prop] = value;
+        return true;
       }
-
-      // 3. Header fallback
-      if (prop in header) return header[prop];
-
-      return undefined;
-    },
-
-    set: (_, prop: string, value) => {
-      row[prop] = value;
-      return true;
-    }
-  });
-}
+    });
+  }
+*/
 
   private shouldRunRule(rule: any, ctx: any): boolean {
     // console.log('shouldRunRule')
@@ -432,16 +437,19 @@ createProxyContext2(row: any, header: any, extra?: any) {
   }
 
   private extractDeps(expression: string): string[] {
-  if (!expression) return [];
+    if (!expression) return [];
 
-  const tokens = expression.match(/[a-zA-Z_][a-zA-Z0-9_]*/g) || [];
+    const tokens = expression.match(/[a-zA-Z_][a-zA-Z0-9_]*/g) || [];
 
-  const reserved = new Set([
-    'Math', 'sum', 'min', 'max', 'if', 'else', 'return', 'true', 'false'
-  ]);
+    const reserved = new Set([
+      'Math', 'sum', 'min', 'max', 'if', 'else', 'return', 'true', 'false'
+    ]);
 
-  return [...new Set(tokens.filter(t => !reserved.has(t)))];
-}
+    return [...new Set(tokens.filter(t => !reserved.has(t)))];
+
+  }
+
+
 
   calcHeaders(header: any, rows: any) {
     // multiple callers
@@ -468,7 +476,7 @@ createProxyContext2(row: any, header: any, extra?: any) {
         scope: 'header',
         ruleId: rule.id,
         target: rule.target,
-         priority: rule.priority,
+        priority: rule.priority,
         deps: rule.dependsOn,
         input: inputSnapshot,
         output,
@@ -519,17 +527,17 @@ createProxyContext2(row: any, header: any, extra?: any) {
     const header = { ...rawFormValues.header };
     const rows = rawFormValues.details.map((row: any) => ({ ...row }));
 
-/*
-      // handles the extras by promoting to detail item level from nested array as a map
-      const rows = rawFormValues.details.map((row: any) => {
-        const extrasMap = this.flattenExtras(row.extras);
-
-        return {
-          ...row,
-          _extras: extrasMap // safe namespace
-        };
-      });
-*/
+    /*
+          // handles the extras by promoting to detail item level from nested array as a map
+          const rows = rawFormValues.details.map((row: any) => {
+            const extrasMap = this.flattenExtras(row.extras);
+    
+            return {
+              ...row,
+              _extras: extrasMap // safe namespace
+            };
+          });
+    */
 
 
     let dataN = 0
@@ -558,7 +566,7 @@ createProxyContext2(row: any, header: any, extra?: any) {
           scope: 'row',
           ruleId: rule.id,
           target: rule.target,
-           priority: rule.priority,
+          priority: rule.priority,
           deps: rule.dependsOn,
           input: inputSnapshot,
           output,
@@ -597,7 +605,7 @@ createProxyContext2(row: any, header: any, extra?: any) {
   public evaluate(form: any, targetScope: 'row' | 'header', rowIndex: number, data: { header: any, row?: any, rows?: any[] }) {
     console.log('evaluate')
 
- console.log('not sure this is working for single row and then back to header that needs all rows')
+    console.log('not sure this is working for single row and then back to header that needs all rows')
 
     // Create local shallow copies to prevent unmanaged side-effects
     this.traceLog = [];
@@ -614,13 +622,13 @@ createProxyContext2(row: any, header: any, extra?: any) {
       if (!row) throw new Error("A 'row' data object must be provided for row-scoped evaluation.");
 
       // Execute all row-scoped rules sequentially for this single row item
-  let dataN = 0
-   
+      let dataN = 0
+
       dataN++
 
       for (const rule of this.rulesByScope.row) { // data input rows
 
-        const ctx: any = this.createProxyContext(row, header);  // must stay inside loop, to get mutated context
+     const ctx: any = this.createProxyContext(row, header, row.extras); // must stay inside loop, to get mutated context
 
         const inputSnapshot: any = {};
         rule.dependsOn.forEach((d: string) => inputSnapshot[d] = ctx[d]);
@@ -640,7 +648,7 @@ createProxyContext2(row: any, header: any, extra?: any) {
           scope: 'row',
           ruleId: rule.id,
           target: rule.target,
-           priority: rule.priority,
+          priority: rule.priority,
           deps: rule.dependsOn,
           input: inputSnapshot,
           output,

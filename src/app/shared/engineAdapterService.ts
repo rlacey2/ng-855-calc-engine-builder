@@ -50,6 +50,7 @@ export class EngineAdapterService {
     current: new FormControl('')
   });
 
+  existingIds: Set<string> = new Set()
 
 
   constructor() {
@@ -127,6 +128,11 @@ export class EngineAdapterService {
   engineInitialise(rulesSorted: Rule[]) {
     this.engine = new CalcEngine(rulesSorted, this.engineConfig)
     this.rulesByScope.set(this.engine.get_rulesByScope())
+
+    this.existingIds = new Set<string>(rulesSorted.map(item => item.id));
+
+    console.log(this.existingIds)
+
   }
 
   calculate() {
@@ -158,12 +164,24 @@ export class EngineAdapterService {
     this.t3FormFG = this.generatet3FormFG(newJSON)
   }
 
-  add() {
+  add() { // new rule
 
+ let newId = "";
+ 
+
+  // Loop until a truly unique ID is found
+  do {
+    newId = crypto.randomUUID().split("-")[0]  /* highly likely unique */
+ 
+  } while (this.existingIds.has(newId));
+
+  // Add the unique ID to the Set so it cannot be reused
+  this.existingIds.add(newId);
+ 
     this.rules.update((r: any) => [...r, {
-      id: crypto.randomUUID().split("-")[0], /* highly likely unique */
+      id: newId,
       target: 'Z',
-      expression: '1*1',
+      expression: '',
       priority: 999
     }]);
   }

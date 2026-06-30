@@ -136,7 +136,10 @@ export const scenarioSet: any =
     "rules":
       [
         // sequential stored out of order to prove priority works as a sort value
-        { "id": "d_1", "type": "calculation", "scope": "row", "target": "subTotal", "expression": "aa * bb *qty * price * xyz", "priority": 1 },
+        { "id": "d_1", "type": "calculation", "scope": "row", "target": 
+          "subTotal", "expression": "aa * bb *qty * price * xyz", "priority": 1, },
+        { "id": "d_2", "type": "calculation", "scope": "row", "target": 
+          "subTotal", "expression":"100", "priority": 1,  "when": "subTotal > 100"},
       ]
     ,
 
