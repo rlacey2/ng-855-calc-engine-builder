@@ -177,7 +177,7 @@ export class CalcEngine {
         const compiledExpr = compileDSL(rule.expression);
         const compiledWhen = rule.when ? compileDSL(rule.when) : null;
 
-       console.log(rule.expression)
+    //   console.log(rule.expression)
        console.log(compiledExpr)
 
         return {
@@ -345,6 +345,7 @@ private flattenExtras(extras: any[]): Record<string, any> {
 
   // a means to find the relevant field value by searching in order
   private createProxyContext(primary: any, secondary?: any, extra?: any) {
+    console.log('createProxyContext')
     return new Proxy({}, {
       get: (_, prop: string) => {
         if (extra && prop in extra) return extra[prop];
@@ -537,7 +538,7 @@ createProxyContext2(row: any, header: any, extra?: any) {
       for (const rule of this.rulesByScope.row) { // data input rows
 
         // allow access to an input stored in header/row/row.extras
-        const ctx: any = this.createProxyContext(row, header); // must stay inside loop, to get mutated context
+        const ctx: any = this.createProxyContext(row, header, row.extras); // must stay inside loop, to get mutated context
 
         const inputSnapshot: any = {};
         rule.dependsOn.forEach((d: string) => inputSnapshot[d] = ctx[d]);

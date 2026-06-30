@@ -53,6 +53,7 @@ export class EngineAdapterService {
 
 
   constructor() {
+/*
     effect(() => {
       console.log('effect()2->dataInputs()')
       const x = this.dataInputs()
@@ -62,6 +63,7 @@ export class EngineAdapterService {
         //   this.t3dataFG = this.engineAdapterService.get_t3dataFG()
       }
     });
+    */
   }
 
 

@@ -64,7 +64,7 @@ export class AppComponent {
   panelStates: boolean[] = [false, true, false, false, false];
 
   //options = { scenario: 'New' }
-    options = { scenario: 'scenario_02' }
+    options = { scenario: 'scenario_03' }
 
   rulesMonaco: string = '{}';
 

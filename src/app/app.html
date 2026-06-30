@@ -64,15 +64,13 @@
           <mat-tab label="Edit Mode">
             <div class="tab-content">
               <!-- the state of the editor is in the string rulesMonaco-->
-              <ngx-monaco-editor style="height:240px" [options]="editorDefaultOptions"
+              <ngx-monaco-editor  [options]="editorDefaultOptions"
                 [(ngModel)]="rulesMonaco"></ngx-monaco-editor>
 
             </div>
           </mat-tab>
         </mat-tab-group>
-
-
-
+ 
       </div>
 
     </mat-expansion-panel>
@@ -120,14 +118,25 @@
     </mat-expansion-panel>
 
     <!-- Difference -->
-    <mat-expansion-panel [(expanded)]="panelStates[4]">
+    <mat-expansion-panel [(expanded)]="panelStates[4]" >
       <mat-expansion-panel-header>
         <mat-panel-title>Difference</mat-panel-title>
 
       </mat-expansion-panel-header>
-      @if(t3dataFG) {
-      <monaco-diff-editor [originalModel]="originalModel()" [modifiedModel]="modifiedModel()"></monaco-diff-editor>
+
+      <!-- 
+      style="display: block; max-height: 1600px; overflow-y: auto;"
+      -->
+      <div style="height:360px">
+      @if(t3dataFG) { 
+      <monaco-diff-editor   [options]="editorDefaultOptions"
+      
+      [originalModel]="originalModel()" [modifiedModel]="modifiedModel()"></monaco-diff-editor>
       }
+
+      </div>
+
+
     </mat-expansion-panel>
   </mat-accordion>
 
