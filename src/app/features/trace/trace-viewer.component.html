@@ -1,0 +1,62 @@
+<div class="p-2">
+  <div>
+    An execution trace, ignored rules not shown, skipped indicates a when conditional is true
+  </div>
+
+  @if (trace) {
+  <table s>
+    <thead>
+      <tr>
+        <th>Scope</th>
+   
+        <th>DataN</th>
+        <th>Target</th>
+        <th>Priority</th>
+        <th>Dependencies</th>
+        <th>Input Data</th>
+        <th>Output</th>
+        <th>Skipped</th>
+             <th>Rule ID</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (item of trace; track $index) {
+      <tr [class.row-skipped]="item.skipped">
+        <td>{{ item.scope }}</td>
+
+        <td>{{ item.dataN }}</td>
+        <td>{{ item.target }}</td>
+        <td>{{ item.priority }}</td>
+        <td>
+          @if (item.deps.length) {
+          {{ item.deps.join(', ') }}
+          } @else {
+          <span class="text-muted">None</span>
+          }
+        </td>
+        <td>
+          <pre>{{ item.input | json }}</pre>
+        </td>
+        <td>
+          @if (item.output !== undefined) {
+          {{ item.output | number:'1.2-4' }}
+          } @else {
+          <span>-</span>
+          }
+        </td>
+        <td>
+          <span [class.badge-skipped]="item.skipped">
+            {{ item.skipped ? 'Yes' : 'No' }}
+          </span>
+        </td>
+                <td>{{ item.ruleId }}</td>
+      </tr>
+      } @empty {
+      <tr>
+        <td colspan="7" class="text-center">No rules found.</td>
+      </tr>
+      }
+    </tbody>
+  </table>
+  }
+</div>

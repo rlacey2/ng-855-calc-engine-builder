@@ -1,0 +1,125 @@
+<div class=" ">
+  <div class="d-flex flex-row">
+
+    <label for="scenarios">Scenario:</label>
+    <select id="scenarios" [(ngModel)]="options.scenario" (change)="onScenarioChange()">
+      <option value="" disabled selected>Choose a Scenario</option>
+      @for (key of scenarioKeys; track key) {
+      <option [value]="key">{{ key }}</option>
+      }
+    </select>
+ 
+    <button class="btn btn-outline-secondary btn-sm" (click)="panelStates=[]">Close All</button>
+    {{panelStates | json}}
+
+  </div>
+ 
+  <mat-accordion class="compact-accordion " multi="true">
+    <!-- Rule Builder -->
+    <mat-expansion-panel [(expanded)]="panelStates[0]" class="sticky-panel">
+      <mat-expansion-panel-header>
+        <mat-panel-title>Rule Builder</mat-panel-title>
+
+      </mat-expansion-panel-header>
+ 
+      <div class="container-fluid d-flex flex-column zzzvh-100">
+
+        <div class="d-flex mx-auto gap-2">
+          <button class="btn btn-outline-secondary btn-sm" (click)="export()">Export</button>
+          <button class="btn btn-outline-secondary btn-sm" (click)="import()">Import</button>
+<div>
+NEED TO SYNC THE TWO TABS
+</div> 
+          
+        </div>
+
+        <mat-tab-group   animationDuration="0ms" class="compact-tabs w-100" mat-stretch-tabs="false" >
+          <mat-tab label="Grid Mode">
+            <div class="tab-content">
+              <rules-table [rules]="rules()" [selectedId]="selected()?.id" (select)="select($event)" (add)="add()">
+              </rules-table>
+              <rule-editor [rule]="selected()"></rule-editor>
+
+            </div>
+          </mat-tab>
+
+          <mat-tab label="Edit Mode">
+            <div class="tab-content">
+              <!-- the state of the editor is in the string rulesMonaco-->
+              <ngx-monaco-editor  [options]="editorDefaultOptions"
+                [(ngModel)]="rulesMonaco"></ngx-monaco-editor>
+            </div>
+          </mat-tab>
+        </mat-tab-group>
+ 
+      </div> 
+
+    </mat-expansion-panel>
+
+    <!-- Dependency Graph -->
+    <mat-expansion-panel [(expanded)]="panelStates[1]">
+      <mat-expansion-panel-header>
+        <mat-panel-title>Dependency Graph</mat-panel-title>
+       <button mat-button class="btn btn-sm btn-outline-primary rounded-4 abs-w-70 me-5" (click)="render($event)">Render</button>
+
+      </mat-expansion-panel-header>
+
+      @if(this.engineAdapterService.dataInputs() ) {
+ 
+      <dependency-graph [rulesByScope]="engineAdapterService.rulesByScope()"
+                        [headerSample]="engineAdapterService.dataInputs().header"
+                        [detailsSample]="engineAdapterService.dataInputs().details[0]"
+                        [refreshGraph]="refreshGraph"
+      >
+ 
+      </dependency-graph>
+        }
+
+    </mat-expansion-panel>
+
+    <!-- Data Inputs to Rules -->
+    <mat-expansion-panel [(expanded)]="panelStates[2]">
+      <mat-expansion-panel-header>
+        <mat-panel-title>Data Inputs to Rules</mat-panel-title>
+        <button mat-button class="btn btn-sm btn-outline-primary rounded-4 abs-w-70 me-5" (click)="patch($event)">Patch</button>
+      </mat-expansion-panel-header>
+ 
+      <data-t3 [t3FormFG]="t3FormFG" style="display: block; max-height: 600px; overflow-y: auto;"></data-t3>
+
+    </mat-expansion-panel>
+
+    <!-- Execution Trace / Calculate-->
+    <mat-expansion-panel [(expanded)]="panelStates[3]">
+      <mat-expansion-panel-header>
+        <mat-panel-title>Execution Trace</mat-panel-title>
+        <button mat-button class="btn btn-sm btn-outline-primary rounded-4 abs-w-70 me-5"
+          (click)="calculate($event)">Calculate</button>
+      </mat-expansion-panel-header>
+
+      <trace-viewer [trace]="engineAdapterService.outputTrace()"></trace-viewer>
+    </mat-expansion-panel>
+
+    <!-- Difference -->
+    <mat-expansion-panel [(expanded)]="panelStates[4]" >
+      <mat-expansion-panel-header>
+        <mat-panel-title>Difference</mat-panel-title>
+
+      </mat-expansion-panel-header>
+
+      <!-- 
+      style="display: block; max-height: 1600px; overflow-y: auto;"
+      -->
+      <div style="height:360px">
+      @if(t3dataFG) { 
+      <monaco-diff-editor   [options]="editorDefaultOptions"
+      
+      [originalModel]="originalModel()" [modifiedModel]="modifiedModel()"></monaco-diff-editor>
+      }
+
+      </div>
+
+
+    </mat-expansion-panel>
+  </mat-accordion>
+
+</div>
